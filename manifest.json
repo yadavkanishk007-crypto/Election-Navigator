@@ -1,0 +1,23 @@
+{
+  "name": "Election Navigator",
+  "short_name": "ElectionNav",
+  "description": "A non-partisan, interactive educational tool that guides users through the election process.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0a0c",
+  "theme_color": "#e11d48",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "categories": ["education", "government"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗳️</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

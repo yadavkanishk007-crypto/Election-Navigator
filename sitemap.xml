@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://election-navigator.run.app/</loc>
+    <lastmod>2026-05-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://election-navigator.run.app/?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://election-navigator.run.app/?lang=hi"/>
+    <xhtml:link rel="alternate" hreflang="ta" href="https://election-navigator.run.app/?lang=ta"/>
+    <xhtml:link rel="alternate" hreflang="te" href="https://election-navigator.run.app/?lang=te"/>
+    <xhtml:link rel="alternate" hreflang="bn" href="https://election-navigator.run.app/?lang=bn"/>
+  </url>
+</urlset>

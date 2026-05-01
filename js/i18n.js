@@ -1,7 +1,13 @@
 /**
- * i18n Module — Language management with reactive updates
+ * @file i18n Module — Language management with reactive updates
  * @module i18n
+ * @description Manages the active language, persists preference to localStorage,
+ *              and provides a reactive subscriber pattern for language changes.
+ * @author Kanishk Yadav
+ * @version 2.0.0
  */
+'use strict';
+
 import { TRANSLATIONS, SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE } from '../data/i18n.js';
 
 /** @type {string} Current active language code */

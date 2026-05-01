@@ -1,8 +1,12 @@
 /**
- * Analytics Module — Google Analytics 4 event tracking
- * Privacy-respecting: no PII, honors Do Not Track.
+ * @file Analytics Module — Google Analytics 4 event tracking
  * @module analytics
+ * @description Privacy-respecting analytics: no PII, honors Do Not Track.
+ *              Provides custom event tracking for all user interactions.
+ * @author Kanishk Yadav
+ * @version 2.0.0
  */
+'use strict';
 
 /** @type {boolean} Whether analytics is available */
 let _enabled = false;

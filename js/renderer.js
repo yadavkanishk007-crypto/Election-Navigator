@@ -1,7 +1,13 @@
 /**
- * Renderer — All DOM rendering logic with safe HTML, i18n, and efficiency
+ * @file Renderer — All DOM rendering logic with safe HTML, i18n, and efficiency
  * @module renderer
+ * @description Handles rendering of phase cards, progress tracker, timeline,
+ *              modal content, and i18n translation application using DocumentFragment
+ *              and requestAnimationFrame for optimal performance.
+ * @author Kanishk Yadav
+ * @version 2.0.0
  */
+'use strict';
 
 import { PHASES, getPhaseCount } from '../data/phases.js';
 import { getTimeline } from '../data/timelines.js';
@@ -10,26 +16,26 @@ import { t } from './i18n.js';
 import { sanitizeHTML, escapeHTML } from './security.js';
 import { announce } from './navigation.js';
 
-/** @type {Object} Cached DOM element references for efficiency */
+/** @type {Object.<string, HTMLElement>} Cached DOM element references */
 const _cache = {};
 
 /**
  * Get a cached DOM element reference.
  * @param {string} id - Element ID
- * @returns {HTMLElement|null}
+ * @returns {HTMLElement|null} Cached element or null
  */
 function getEl(id) {
-  if (!_cache[id]) _cache[id] = document.getElementById(id);
+  if (!_cache[id]) { _cache[id] = document.getElementById(id); }
   return _cache[id];
 }
 
 /**
  * Render all phase cards into #phases-grid using DocumentFragment.
- * Called once on init. Status is updated separately.
+ * @returns {void}
  */
 export function renderPhaseCards() {
   const grid = getEl('phases-grid');
-  if (!grid) return;
+  if (!grid) { return; }
 
   const count = getPhaseCount();
   const fragment = document.createDocumentFragment();
@@ -48,7 +54,7 @@ export function renderPhaseCards() {
 
     const statusText = isFirst ? t('phases.statusReady') : t('phases.statusLocked');
     const truncatedText = escapeHTML(phase.sections[0].text.substring(0, 100));
-    const tags = phase.sections.map(s => `<span class="tag">${escapeHTML(s.heading.split(' ').pop())}</span>`).join('');
+    const tags = phase.sections.map((s) => `<span class="tag">${escapeHTML(s.heading.split(' ').pop())}</span>`).join('');
 
     card.innerHTML = `
       <div class="phase-number" aria-hidden="true">${String(i).padStart(2, '0')}</div>
@@ -75,10 +81,11 @@ export function renderPhaseCards() {
 
 /**
  * Render progress step dots into #progress-track using DocumentFragment.
+ * @returns {void}
  */
 export function renderProgressSteps() {
   const track = getEl('progress-track');
-  if (!track) return;
+  if (!track) { return; }
 
   const count = getPhaseCount();
   const fragment = document.createDocumentFragment();
@@ -89,7 +96,7 @@ export function renderProgressSteps() {
     step.id = `prog-${i}`;
     step.setAttribute('role', 'listitem');
     step.setAttribute('aria-label', `Phase ${i}: ${PHASES[i].title.split(' ')[0]}`);
-    if (i === 1) step.setAttribute('aria-current', 'step');
+    if (i === 1) { step.setAttribute('aria-current', 'step'); }
 
     step.innerHTML = `
       <div class="step-dot" aria-hidden="true">${i}</div>
@@ -113,6 +120,7 @@ export function renderProgressSteps() {
 /**
  * Update progress tracker, unicode bar, and phase card statuses.
  * Uses requestAnimationFrame for visual updates.
+ * @returns {void}
  */
 export function updateProgressDisplay() {
   requestAnimationFrame(() => {
@@ -125,7 +133,7 @@ export function updateProgressDisplay() {
       const card = getEl(`phase-card-${i}`);
       const status = getEl(`status-${i}`);
 
-      if (!step || !card || !status) continue;
+      if (!step || !card || !status) { continue; }
 
       // Reset
       step.className = 'progress-step';
@@ -151,7 +159,7 @@ export function updateProgressDisplay() {
 
       if (i < count) {
         const line = getEl(`line-${i}`);
-        if (line) line.className = completed.includes(i) ? 'progress-line filled' : 'progress-line';
+        if (line) { line.className = completed.includes(i) ? 'progress-line filled' : 'progress-line'; }
       }
     }
 
@@ -164,9 +172,9 @@ export function updateProgressDisplay() {
     const visual = getEl('progress-bar-visual');
     const pctEl = getEl('progress-pct');
     const progressBar = getEl('unicode-progress');
-    if (visual) visual.textContent = `[${bar}]`;
-    if (pctEl) pctEl.textContent = `${pct}%`;
-    if (progressBar) progressBar.setAttribute('aria-valuenow', String(pct));
+    if (visual) { visual.textContent = `[${bar}]`; }
+    if (pctEl) { pctEl.textContent = `${pct}%`; }
+    if (progressBar) { progressBar.setAttribute('aria-valuenow', String(pct)); }
 
     // Quick action label
     const labels = {
@@ -176,7 +184,7 @@ export function updateProgressDisplay() {
       4: '📊 ' + t('header.phases')
     };
     const qaLearn = getEl('qa-learn');
-    if (qaLearn) qaLearn.textContent = labels[current] || labels[1];
+    if (qaLearn) { qaLearn.textContent = labels[current] || labels[1]; }
 
     // Announce to screen readers
     if (completed.length > 0) {
@@ -188,17 +196,18 @@ export function updateProgressDisplay() {
 /**
  * Render timeline items from data using DocumentFragment.
  * @param {string|null} region - Lowercase region name
+ * @returns {void}
  */
 export function renderTimeline(region) {
   const container = getEl('timeline-container');
   const desc = getEl('timeline-desc');
-  if (!container) return;
+  if (!container) { return; }
 
   const { items, label } = getTimeline(region);
-  if (desc) desc.textContent = label;
+  if (desc) { desc.textContent = label; }
 
   const fragment = document.createDocumentFragment();
-  items.forEach(item => {
+  items.forEach((item) => {
     const div = document.createElement('div');
     div.className = 'tl-item';
     div.setAttribute('role', 'listitem');
@@ -218,21 +227,22 @@ export function renderTimeline(region) {
  * Render phase content into the modal body.
  * Uses sanitizeHTML for trusted data source HTML.
  * @param {number} phaseId - Phase number
+ * @returns {void}
  */
 export function renderPhaseModal(phaseId) {
   const data = PHASES[phaseId];
-  if (!data) return;
+  if (!data) { return; }
 
   const modalBody = getEl('modal-body');
-  if (!modalBody) return;
+  if (!modalBody) { return; }
 
   let html = `<div class="neon-header" id="phase-modal-title">▌║ 💖 ${escapeHTML(data.title.toUpperCase())} ║▌</div>`;
   html += `<h2>${data.icon} ${escapeHTML(data.title)}</h2>`;
 
-  data.sections.forEach(s => {
+  data.sections.forEach((s) => {
     html += `<h3>${sanitizeHTML(s.heading)}</h3><p>${sanitizeHTML(s.text)}</p>`;
     if (s.list) {
-      html += '<ul>' + s.list.map(li => `<li>${sanitizeHTML(li)}</li>`).join('') + '</ul>';
+      html += '<ul>' + s.list.map((li) => `<li>${sanitizeHTML(li)}</li>`).join('') + '</ul>';
     }
     if (s.infoBox) {
       html += `<div class="info-box"><p>${sanitizeHTML(s.infoBox)}</p></div>`;
@@ -244,9 +254,10 @@ export function renderPhaseModal(phaseId) {
 
 /**
  * Apply i18n translations to all elements with data-i18n attributes.
+ * @returns {void}
  */
 export function applyTranslations() {
-  document.querySelectorAll('[data-i18n]').forEach(el => {
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
     const key = el.getAttribute('data-i18n');
     const translated = t(key);
     if (translated !== key) {
@@ -254,7 +265,7 @@ export function applyTranslations() {
     }
   });
 
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
     const key = el.getAttribute('data-i18n-placeholder');
     const translated = t(key);
     if (translated !== key) {

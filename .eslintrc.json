@@ -1,13 +1,15 @@
 {
   "env": {
     "browser": true,
-    "es2020": true
+    "es2020": true,
+    "worker": true
   },
   "parserOptions": {
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
   "rules": {
+    "strict": ["error", "safe"],
     "no-unused-vars": "warn",
     "no-undef": "error",
     "eqeqeq": ["error", "always"],
@@ -24,6 +26,11 @@
     "no-multi-assign": "warn",
     "no-return-assign": "error",
     "no-self-compare": "error",
-    "no-sequences": "error"
+    "no-sequences": "error",
+    "no-lone-blocks": "error",
+    "no-useless-return": "warn",
+    "no-shadow": "warn",
+    "no-param-reassign": "warn",
+    "consistent-return": "warn"
   }
 }

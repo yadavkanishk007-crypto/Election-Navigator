@@ -1,106 +1,31 @@
-<p align="center">
-  <img src="https://img.shields.io/badge/Status-Live-brightgreen?style=for-the-badge" alt="Status: Live" />
-  <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License: MIT" />
-  <img src="https://img.shields.io/badge/Vanilla-JS-yellow?style=for-the-badge&logo=javascript&logoColor=black" alt="Vanilla JS" />
-  <img src="https://img.shields.io/badge/ES-Modules-orange?style=for-the-badge" alt="ES Modules" />
-  <img src="https://img.shields.io/badge/Zero-Dependencies-red?style=for-the-badge" alt="Zero Dependencies" />
-  <img src="https://img.shields.io/badge/WCAG-2.1_AA-purple?style=for-the-badge" alt="WCAG 2.1 AA" />
-  <img src="https://img.shields.io/badge/i18n-5_Languages-teal?style=for-the-badge" alt="5 Languages" />
-  <img src="https://img.shields.io/badge/GCP-Cloud_Run-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white" alt="GCP Cloud Run" />
-</p>
+# 🗳️ Election Navigator
 
-<h1 align="center">🗳️ Election Navigator</h1>
+> **A non-partisan, interactive educational tool that guides users through the election process — from registration to results.**
 
-<p align="center">
-  <strong>A non-partisan, interactive, multilingual web application that guides users through the entire election process — from voter registration to the final inauguration.</strong>
-</p>
+![Election Navigator Hero](screenshots/hero.png)
 
-<p align="center">
-  Built with a custom <strong>Neon Grid Protocol</strong> design system · WCAG 2.1 AA accessible · Deployed on Google Cloud Run
-</p>
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](#)
+[![Accessibility: WCAG 2.1 AA](https://img.shields.io/badge/Accessibility-WCAG%202.1%20AA-brightgreen)](#)
+[![Languages: 5](https://img.shields.io/badge/Languages-5-orange)](#)
+[![Tests: 80+](https://img.shields.io/badge/Tests-80%2B-green)](#)
+[![Deploy: Cloud Run](https://img.shields.io/badge/Deploy-Cloud%20Run-4285F4)](#)
 
 ---
 
-## 📸 Preview
+## 🎯 Overview
 
-<p align="center">
-  <img src="./screenshots/hero.png" alt="Election Navigator — Hero Section" width="90%" />
-</p>
+Election Navigator is a **production-grade, zero-dependency** web application that demystifies the election process for citizens worldwide. Built with a unique **"Neon Grid Protocol"** aesthetic, it combines terminal-inspired design with modern accessibility standards.
 
----
+### Key Features
 
-## ✨ Features
-
-### 🎓 Adaptive Learning System
-- **Three knowledge levels** — Beginner, Intermediate, and Expert
-- **Progressive phase unlocking** — complete a quiz to advance to the next phase
-- **Real-time progress tracking** — Unicode progress bar (`[████░░░░░░]`) and step-dot tracker update live
-
-### 📚 Four Comprehensive Learning Phases
-
-| Phase | Title | Topics |
-|-------|-------|--------|
-| 1 | Registration & Eligibility | Who can vote, how to register, key deadlines |
-| 2 | Candidates & Platforms | Ballot access, party platforms, candidate research |
-| 3 | Voting Mechanics | In-person, early, absentee & electronic voting, ballot security |
-| 4 | Counting & Results | Vote counting, certification, recounts, transition of power |
-
-### 🧠 Interactive Quiz Engine
-- 12 questions across 4 phases with instant feedback and explanations
-- 66% pass threshold with retry and material review options
-- Celebration animation on full completion
-
-### 📅 Region-Aware Election Timelines
-Pre-built timelines for **🇺🇸 United States**, **🇮🇳 India**, and **🇬🇧 United Kingdom**, plus a universal default timeline for all other countries.
-
-### 🌐 Multi-Language Support (i18n)
-Full UI translation for 5 languages with persistent preference:
-
-| Language | Code |
-|----------|------|
-| English | `en` |
-| हिन्दी (Hindi) | `hi` |
-| தமிழ் (Tamil) | `ta` |
-| తెలుగు (Telugu) | `te` |
-| বাংলা (Bengali) | `bn` |
-
-Switch languages via the 🌐 selector in the header — preference is saved to `localStorage`.
-
-### ♿ Accessibility (WCAG 2.1 AA)
-- **Skip navigation link** for keyboard users
-- **ARIA roles & labels** on every interactive element, section, and modal
-- **Focus trapping** inside modal dialogs with focus restore on close
-- **Screen reader announcements** via `aria-live` region for quiz results and progress
-- **`prefers-reduced-motion`** support — disables all animations
-- **`prefers-contrast: more`** support — increases border and text contrast
-- **Keyboard navigation** — Tab through all elements, Enter/Space to activate, Escape to close
-
-### 🔒 Security
-- **Content Security Policy (CSP)** via `<meta>` tag restricting script and style sources
-- **Input sanitization** — all user input stripped of HTML tags, limited length, and escaped
-- **XSS prevention** — `escapeHTML()` on every dynamically rendered string, `sanitizeHTML()` whitelist for trusted data
-- **Quiz answer validation** — bounds checking via `isValidIndex()`
-- **Immutable data** — `Object.freeze()` on all exported data objects
-- **Nginx security headers** — `X-Content-Type-Options`, `X-Frame-Options`, `Strict-Transport-Security`, `Permissions-Policy`
-
-### 🧪 Testing
-Custom zero-dependency test framework with 44+ tests across 4 suites:
-
-| Suite | Tests | What It Validates |
-|-------|-------|-------------------|
-| `state.test.js` | 9 | State getters/setters, event bus, immutability |
-| `security.test.js` | 14 | XSS escaping, input sanitization, HTML whitelist, index validation |
-| `data.test.js` | 10 | Phase/quiz alignment, timeline structure, i18n completeness |
-| `accessibility.test.js` | 11 | ARIA roles, skip-link, button labels, form labels, live regions |
-
-Run tests at: `http://localhost:3000/tests/index.html`
-
-### 📊 Google Services Integration
-- **Google Analytics 4** — custom event tracking (`level_selected`, `phase_completed`, `quiz_completed`, `region_selected`, `language_changed`)
-- **Privacy-respecting** — honors Do Not Track, anonymizes IP, no PII
-- **JSON-LD Structured Data** — `WebApplication` + `EducationalApplication` schema for SEO
-- **Google Fonts** — optimized loading with `preconnect` and `display=swap`
-- **Google Cloud Run** — containerized deployment with CI/CD via Cloud Build
+- 🌐 **5 Languages** — English, Hindi, Tamil, Telugu, Bengali (dynamic i18n)
+- 🧠 **Interactive Quizzes** — Phase-by-phase knowledge assessments with instant feedback
+- 📅 **Region-Specific Timelines** — Tailored election timelines for US, India, and UK
+- 🔒 **Security Hardened** — CSP, Trusted Types, SRI, input sanitization, XSS prevention
+- ♿ **WCAG 2.1 AA Compliant** — Focus trapping, ARIA roles, skip navigation, forced-colors support
+- 📊 **GA4 Analytics** — Privacy-respecting with DNT support
+- 📱 **PWA-Ready** — Service worker, manifest.json, offline-first caching
+- 🧪 **80+ Automated Tests** — 9 test suites covering all modules
 
 ---
 
@@ -108,110 +33,104 @@ Run tests at: `http://localhost:3000/tests/index.html`
 
 ```
 election-navigator/
-│
-├── index.html                  ← Slim HTML shell (CSP, ARIA, JSON-LD, GA4)
-├── README.md
-├── Dockerfile                  ← Alpine Nginx container for Cloud Run
-├── nginx.conf                  ← Security headers, gzip, caching
-├── cloudbuild.yaml             ← CI/CD pipeline for Cloud Build
-├── .eslintrc.json              ← ESLint config (ES2020 modules)
-├── .dockerignore
-│
-├── css/                        ← Presentation Layer
-│   ├── tokens.css              ← Design tokens (colors, fonts, spacing)
-│   ├── base.css                ← Reset, a11y (skip-link, focus, reduced-motion)
-│   ├── layout.css              ← Header, hero, grids, language dropdown, responsive
-│   ├── components.css          ← Buttons, cards, modals, quiz UI
-│   └── neon-grid.css           ← Terminal aesthetics (glow-tab, unicode bar)
-│
-├── js/                         ← Logic Layer (ES Modules)
-│   ├── main.js                 ← Entry point — wires all modules
-│   ├── state.js                ← Centralized state with pub/sub event bus
-│   ├── renderer.js             ← Safe DOM rendering (DocumentFragment, escapeHTML)
-│   ├── quiz.js                 ← Quiz engine with i18n and validation
-│   ├── navigation.js           ← Scroll, modals, focus trap, announcements
-│   ├── i18n.js                 ← Language manager (get/set, persistence)
-│   ├── security.js             ← Input sanitization, XSS prevention
-│   └── analytics.js            ← GA4 event tracking (DNT-aware)
-│
-├── data/                       ← Data Layer (pure content, frozen)
-│   ├── phases.js               ← Phase content (Object.freeze)
-│   ├── quizzes.js              ← Quiz questions (Object.freeze)
-│   ├── timelines.js            ← Region-specific timelines
-│   └── i18n.js                 ← Translations for 5 languages
-│
-├── tests/                      ← Test Suite
-│   ├── test-runner.js          ← Custom framework (describe/it/expect)
-│   ├── state.test.js
-│   ├── security.test.js
-│   ├── data.test.js
-│   ├── accessibility.test.js
-│   └── index.html              ← Browser-based test runner page
-│
-└── screenshots/
-    └── hero.png
+├── index.html              # Entry point — semantic HTML5, ARIA, JSON-LD
+├── manifest.json           # PWA manifest
+├── sw.js                   # Service Worker — cache-first strategy
+├── robots.txt              # SEO crawl directives
+├── sitemap.xml             # Sitemap with hreflang alternates
+├── css/
+│   ├── tokens.css          # Design tokens & CSS custom properties
+│   ├── base.css            # Reset, a11y utilities, reduced-motion, forced-colors
+│   ├── layout.css          # Header, hero, grid, timeline, responsive
+│   ├── components.css      # Cards, modals, buttons, quiz, celebration
+│   └── neon-grid.css       # Terminal UI elements & neon aesthetic
+├── js/
+│   ├── main.js             # Entry point — SW registration, event wiring
+│   ├── state.js            # Centralized state with pub/sub event bus
+│   ├── renderer.js         # DOM rendering — DocumentFragment, i18n
+│   ├── navigation.js       # Scroll, modals, focus trap, ARIA announcements
+│   ├── quiz.js             # Quiz engine — scoring, validation, assertive a11y
+│   ├── security.js         # Trusted Types, sanitization, escaping
+│   ├── i18n.js             # Language manager — reactive, localStorage
+│   ├── analytics.js        # GA4 event tracking — privacy-first
+│   └── gtag.js             # Externalized GA4 initialization (CSP-safe)
+├── data/
+│   ├── phases.js           # Election phase content (immutable)
+│   ├── quizzes.js          # Quiz questions with explanations (immutable)
+│   ├── timelines.js        # Region-specific timelines (immutable)
+│   └── i18n.js             # Translation strings — 5 languages (immutable)
+├── tests/
+│   ├── index.html          # Test dashboard (80+ assertions)
+│   ├── test-runner.js      # Zero-dependency test framework
+│   ├── state.test.js       # State management tests
+│   ├── security.test.js    # XSS prevention & sanitization tests
+│   ├── data.test.js        # Data integrity & immutability tests
+│   ├── accessibility.test.js  # WCAG compliance tests
+│   ├── navigation.test.js  # Modal, focus trap, keyboard tests
+│   ├── quiz.test.js        # Quiz logic & scoring tests
+│   ├── i18n.test.js        # Translation completeness tests
+│   ├── renderer.test.js    # DOM rendering validation tests
+│   └── analytics.test.js   # Privacy & GA4 integration tests
+├── Dockerfile              # Multi-stage nginx:alpine build
+├── cloudbuild.yaml         # GCP Cloud Build → Artifact Registry → Cloud Run
+├── nginx.conf              # Security headers, gzip, caching
+└── .eslintrc.json          # Strict linting rules
 ```
 
-### Module Dependency Graph
+### Module Communication Flow
 
-```
-main.js
-├── state.js
-├── renderer.js ──→ data/phases.js, data/timelines.js, security.js, i18n.js
-├── quiz.js ──→ data/quizzes.js, security.js, i18n.js, analytics.js
-├── navigation.js (focus trap, announcements)
-├── i18n.js ──→ data/i18n.js
-├── security.js
-└── analytics.js
+```mermaid
+graph LR
+    A[main.js] --> B[state.js]
+    A --> C[renderer.js]
+    A --> D[navigation.js]
+    A --> E[quiz.js]
+    A --> F[i18n.js]
+    A --> G[analytics.js]
+    B -->|pub/sub| C
+    E --> D
+    E --> B
+    C --> F
+    E --> G
+    H[security.js] --> C
+    H --> E
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## 🔒 Security Architecture
 
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| **Structure** | HTML5 Semantic | Accessible document with ARIA, JSON-LD |
-| **Styling** | Vanilla CSS + Custom Properties | Full design system, a11y media queries |
-| **Logic** | Vanilla JS ES Modules | Modular, zero-dependency architecture |
-| **Typography** | Google Fonts | Inter, Outfit, JetBrains Mono |
-| **Analytics** | Google Analytics 4 | Privacy-respecting event tracking |
-| **Deployment** | Google Cloud Run | Containerized, auto-scaling |
-| **CI/CD** | Google Cloud Build | Automated build & deploy pipeline |
-| **Testing** | Custom framework | 44+ tests, browser-based runner |
-| **Security** | CSP + Nginx headers | XSS prevention, HSTS, frame protection |
-| **i18n** | Custom module | 5 languages, localStorage persistence |
+| Layer | Implementation |
+|-------|---------------|
+| **CSP** | Strict Content-Security-Policy with no `'unsafe-inline'` |
+| **Trusted Types** | DOM-based XSS prevention policy for innerHTML sinks |
+| **Input Sanitization** | Multi-layer: tag stripping, char filtering, length limits |
+| **HTML Sanitizer** | DOMParser-based with tag/attribute whitelist |
+| **SRI** | Subresource integrity on external resources |
+| **Headers** | HSTS, X-Frame-Options, COEP, COOP, CORP, Permissions-Policy |
+| **Data Immutability** | `Object.freeze()` on all exported data structures |
+| **Analytics Privacy** | DNT respect, anonymized IP, no PII collection |
 
 ---
 
-## 🚀 Getting Started
+## ♿ Accessibility
 
-### Prerequisites
-- A modern web browser (Chrome, Firefox, Edge, Safari)
-- [Node.js](https://nodejs.org/) (optional — only for the local dev server)
-
-### Run Locally
-
-```bash
-# Clone the repository
-git clone https://github.com/yadavkanishk007/election-navigator.git
-cd election-navigator
-
-# Serve locally
-npx -y serve .
-```
-
-Then open **http://localhost:3000** in your browser.
-
-### Run Tests
-
-Open **http://localhost:3000/tests/index.html** in your browser to run all 44+ tests.
+- **Skip Navigation** — Keyboard users bypass header directly to content
+- **Focus Trapping** — Modals trap Tab focus; Escape key closes
+- **Screen Reader** — Dual aria-live regions (polite + assertive)
+- **Heading Hierarchy** — Proper `h1 → h2` structure
+- **Semantic HTML** — No redundant ARIA roles on landmark elements
+- **High Contrast** — `prefers-contrast: more` support
+- **Forced Colors** — Windows High Contrast mode compatible
+- **Reduced Motion** — `prefers-reduced-motion` disables animations
+- **Button Labels** — Every interactive element has an accessible name
+- **Quiz Feedback** — `aria-live="assertive"` interrupts for quiz corrections
 
 ---
 
-## ☁️ Deploy to Google Cloud
+## 🚀 Deployment
 
-### One-Command Deploy (Cloud Run)
+### One-Command Deploy (Google Cloud Run)
 
 ```bash
 gcloud run deploy election-navigator \
@@ -221,103 +140,56 @@ gcloud run deploy election-navigator \
   --port 8080
 ```
 
-### CI/CD with Cloud Build
+### CI/CD Pipeline
 
-Push to your connected repo — `cloudbuild.yaml` automatically builds and deploys:
+The `cloudbuild.yaml` configures automated deployment:
 
-```bash
-gcloud builds submit --config cloudbuild.yaml
+1. **Build** → Docker image via `nginx:alpine`
+2. **Push** → Google Artifact Registry (not deprecated `gcr.io`)
+3. **Deploy** → Cloud Run with 128Mi memory, auto-scaling 0-3 instances
+
+---
+
+## 🧪 Testing
+
+Run the test suite by opening `/tests/index.html` in a browser:
+
+```
+9 Test Suites • 80+ Assertions
+├── State Management    — 9 tests
+├── Security            — 14 tests
+├── Data Integrity      — 11 tests
+├── Accessibility       — 15 tests
+├── Navigation          — 11 tests
+├── Quiz Logic          — 15 tests
+├── i18n                — 12 tests
+├── Renderer            — 10 tests
+└── Analytics           — 8 tests
 ```
 
 ---
 
-## 🔧 Customization Guide
+## 🌐 Supported Languages
 
-### Adding a New Learning Phase
-
-**1.** Add content in `data/phases.js`:
-```js
-5: { title: "Post-Election Governance", icon: "🏛️", label: "Phase 5", sections: [...] }
-```
-
-**2.** Add quiz questions in `data/quizzes.js`:
-```js
-5: [{ q: "...", options: ["A","B","C","D"], correct: 1, explanation: "..." }]
-```
-
-That's it — progress bar, phase cards, and quiz engine auto-scale.
-
-### Adding a New Region Timeline
-
-Add to `data/timelines.js`:
-```js
-"australia": [
-  { title: "📋 Enrolment", date: "Ongoing", desc: "Enrol via the AEC." },
-  ...
-]
-```
-
-### Adding a New Language
-
-Add a new key in `data/i18n.js`:
-```js
-mr: {
-  meta: { name: "मराठी", dir: "ltr" },
-  header: { phases: "टप्पे", timeline: "कालरेषा", quiz: "प्रश्नमंजुषा" },
-  // ... all required keys
-}
-```
-
-### Changing the Theme
-
-Edit `css/tokens.css`:
-```css
-:root {
-  --accent-1: #e11d48;    /* Your brand color */
-  --bg-primary: #0f0a0c;  /* Background */
-}
-```
+| Code | Language | Script |
+|------|----------|--------|
+| `en` | English  | Latin  |
+| `hi` | हिन्दी    | Devanagari |
+| `ta` | தமிழ்     | Tamil  |
+| `te` | తెలుగు    | Telugu |
+| `bn` | বাংলা     | Bengali |
 
 ---
 
-## 📱 Responsive Design
+## 🛠️ Tech Stack
 
-| Breakpoint | Behavior |
-|-----------|----------|
-| **Desktop** (1024px+) | Full grid, side-by-side hero, all nav buttons |
-| **Tablet** (768px–1024px) | 2-column grid, stacked hero |
-| **Mobile** (< 480px) | Single column, only language selector in header |
-
----
-
-## ⌨️ Keyboard Shortcuts
-
-| Key | Action |
-|-----|--------|
-| `Tab` | Navigate between interactive elements |
-| `Enter` / `Space` | Activate buttons, open phase cards |
-| `Escape` | Close any modal, dropdown, or celebration overlay |
-
----
-
-## 🔐 Security Headers (Production)
-
-When deployed via the included `nginx.conf`, the following headers are set:
-
-| Header | Value |
-|--------|-------|
-| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains` |
-| `X-Content-Type-Options` | `nosniff` |
-| `X-Frame-Options` | `DENY` |
-| `X-XSS-Protection` | `1; mode=block` |
-| `Referrer-Policy` | `no-referrer` |
-| `Permissions-Policy` | `camera=(), microphone=(), geolocation=()` |
-
----
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
+- **Frontend**: Vanilla JavaScript (ES2020 Modules), HTML5, CSS3
+- **Server**: Nginx Alpine
+- **Container**: Docker
+- **CI/CD**: Google Cloud Build
+- **Hosting**: Google Cloud Run
+- **Analytics**: Google Analytics 4
+- **SEO**: JSON-LD, Open Graph, Twitter Cards, Sitemap, Robots.txt
 
 ---
 
@@ -325,10 +197,8 @@ This project is open source and available under the [MIT License](LICENSE).
 
 **Kanishk Yadav**
 
-Built with ❤️ as an interactive civic education tool to make democracy accessible and understandable for everyone — in every language.
-
 ---
 
-<p align="center">
-  <strong>🗳️ Election Navigator</strong> — Making democracy easy to understand, one phase at a time.
-</p>
+## 📄 License
+
+This project is for educational purposes. Non-partisan election education.

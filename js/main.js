@@ -1,8 +1,12 @@
 /**
- * Main Entry Point — Wires everything together
- * Imports all modules, attaches event listeners, and initializes the app.
+ * @file Main Entry Point — Wires everything together
  * @module main
+ * @description Imports all modules, registers the service worker, attaches event
+ *              listeners, builds the language dropdown, and initializes the app.
+ * @author Kanishk Yadav
+ * @version 2.0.0
  */
+'use strict';
 
 import * as State from './state.js';
 import * as Nav from './navigation.js';
@@ -15,6 +19,21 @@ import { initAnalytics, trackLevelSelected, trackRegionSelected, trackLanguageCh
 
 // ===== EXPOSE TO GLOBAL (for inline onclick from renderer) =====
 window.openPhase = openPhase;
+
+// ===== SERVICE WORKER REGISTRATION =====
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js', { scope: '/' })
+      .then((reg) => {
+        console.log('[SW] Registered:', reg.scope);
+      })
+      .catch((err) => {
+        // Service worker registration failure is non-fatal
+        console.warn('[SW] Registration failed:', err.message);
+      });
+  });
+}
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
@@ -39,17 +58,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ===== LANGUAGE DROPDOWN =====
+/**
+ * Build the language selector dropdown with all supported languages.
+ * @returns {void}
+ */
 function buildLanguageDropdown() {
   const dropdown = document.getElementById('lang-dropdown');
   const toggle = document.getElementById('lang-toggle');
   const currentLabel = document.getElementById('lang-current');
-  if (!dropdown || !toggle) return;
+  if (!dropdown || !toggle) { return; }
 
   const languages = getSupportedLanguages();
   const currentLang = getLanguage();
 
   dropdown.innerHTML = '';
-  languages.forEach(lang => {
+  languages.forEach((lang) => {
     const li = document.createElement('li');
     li.textContent = lang.name;
     li.setAttribute('role', 'option');
@@ -58,19 +81,19 @@ function buildLanguageDropdown() {
     li.addEventListener('click', () => {
       setLanguage(lang.code);
       trackLanguageChanged(lang.code);
-      if (currentLabel) currentLabel.textContent = lang.code.toUpperCase();
+      if (currentLabel) { currentLabel.textContent = lang.code.toUpperCase(); }
       dropdown.classList.add('hidden');
       toggle.setAttribute('aria-expanded', 'false');
 
       // Update aria-selected
-      dropdown.querySelectorAll('li').forEach(item => {
+      dropdown.querySelectorAll('li').forEach((item) => {
         item.setAttribute('aria-selected', item.dataset.lang === lang.code ? 'true' : 'false');
       });
     });
     dropdown.appendChild(li);
   });
 
-  if (currentLabel) currentLabel.textContent = currentLang.toUpperCase();
+  if (currentLabel) { currentLabel.textContent = currentLang.toUpperCase(); }
 
   // Toggle dropdown
   toggle.addEventListener('click', (e) => {
@@ -88,9 +111,13 @@ function buildLanguageDropdown() {
 }
 
 // ===== EVENT WIRING =====
+/**
+ * Wire up all event listeners for user interactions.
+ * @returns {void}
+ */
 function wireUpEventListeners() {
   // Level selector
-  document.querySelectorAll('.level-btn').forEach(btn => {
+  document.querySelectorAll('.level-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
       selectLevel(btn.dataset.level);
     });
@@ -106,7 +133,7 @@ function wireUpEventListeners() {
   const regionInput = document.getElementById('region-input');
   if (regionInput) {
     regionInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') submitRegion();
+      if (e.key === 'Enter') { submitRegion(); }
     });
   }
 
@@ -131,14 +158,14 @@ function wireUpEventListeners() {
     document.getElementById('celebration')?.classList.add('hidden');
   });
 
-  // Footer nav buttons (now proper buttons with data-nav)
-  document.querySelectorAll('.footer-nav-btn[data-nav]').forEach(btn => {
+  // Footer nav buttons (proper buttons with data-nav)
+  document.querySelectorAll('.footer-nav-btn[data-nav]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const nav = btn.dataset.nav;
-      if (nav === 'phases') Nav.scrollToSection('phases-section');
-      else if (nav === 'timeline') Nav.scrollToSection('timeline-section');
-      else if (nav === 'quiz') Quiz.openQuiz();
-      else if (nav === 'home') scrollTo({ top: 0, behavior: 'smooth' });
+      if (nav === 'phases') { Nav.scrollToSection('phases-section'); }
+      else if (nav === 'timeline') { Nav.scrollToSection('timeline-section'); }
+      else if (nav === 'quiz') { Quiz.openQuiz(); }
+      else if (nav === 'home') { scrollTo({ top: 0, behavior: 'smooth' }); }
     });
   });
 
@@ -153,10 +180,15 @@ function wireUpEventListeners() {
 
 // ===== ACTIONS =====
 
+/**
+ * Handle level selection — update state, animate transition, show region section.
+ * @param {string} level - Selected level ('beginner', 'intermediate', 'expert')
+ * @returns {void}
+ */
 function selectLevel(level) {
   State.setUserLevel(level);
   trackLevelSelected(level);
-  document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.level-btn').forEach((b) => b.classList.remove('selected'));
   document.querySelector(`[data-level="${level}"]`)?.classList.add('selected');
   Nav.announce(`${level} level selected.`);
 
@@ -167,20 +199,32 @@ function selectLevel(level) {
   }, 400);
 }
 
+/**
+ * Submit the region input and load tailored content.
+ * @returns {void}
+ */
 function submitRegion() {
   const raw = document.getElementById('region-input')?.value || '';
   const input = sanitizeInput(raw);
-  if (!input) return;
+  if (!input) { return; }
   State.setUserRegion(input.toLowerCase());
   trackRegionSelected(input.toLowerCase());
   showMainContent();
 }
 
+/**
+ * Skip region selection and load default content.
+ * @returns {void}
+ */
 function skipRegion() {
   State.setUserRegion(null);
   showMainContent();
 }
 
+/**
+ * Show all main content sections and render dynamic content.
+ * @returns {void}
+ */
 function showMainContent() {
   Nav.toggleSection('region-section', false);
   Nav.toggleSection('progress-section', true);
@@ -197,11 +241,16 @@ function showMainContent() {
   Nav.announce('Main content loaded. Navigate through phases to learn about the election process.');
 }
 
+/**
+ * Open a phase detail modal (if unlocked or completed).
+ * @param {number} phase - Phase number to open
+ * @returns {void}
+ */
 function openPhase(phase) {
   const current = State.getCurrentPhase();
   const completed = State.getCompletedPhases();
 
-  if (phase !== current && !completed.includes(phase)) return;
+  if (phase !== current && !completed.includes(phase)) { return; }
 
   State.setQuizPhase(phase);
   Renderer.renderPhaseModal(phase);

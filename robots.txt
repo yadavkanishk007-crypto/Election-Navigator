@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /tests/
+
+Sitemap: https://election-navigator.run.app/sitemap.xml

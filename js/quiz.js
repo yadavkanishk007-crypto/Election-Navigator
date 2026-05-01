@@ -1,25 +1,32 @@
 /**
- * Quiz Engine — Self-contained quiz module with security and i18n
+ * @file Quiz Engine — Self-contained quiz module with security, i18n, and assertive a11y
  * @module quiz
+ * @description Manages quiz flow: question rendering, answer validation, scoring,
+ *              pass/fail determination, and phase progression.
+ * @author Kanishk Yadav
+ * @version 2.0.0
  */
+'use strict';
 
 import { QUIZZES } from '../data/quizzes.js';
 import { getPhaseCount } from '../data/phases.js';
 import * as State from './state.js';
-import { openModal, closeModal, announce } from './navigation.js';
+import { openModal, closeModal, announce, announceAssertive } from './navigation.js';
 import { updateProgressDisplay } from './renderer.js';
 import { t } from './i18n.js';
 import { escapeHTML, isValidIndex } from './security.js';
 import { trackQuizResult } from './analytics.js';
 
+/** @type {number} Minimum pass rate (66%) */
 const PASS_THRESHOLD = 0.66;
 
 /**
  * Start a quiz for a specific phase.
- * @param {number} phaseId - Phase number
+ * @param {number} phaseId - Phase number (1-indexed)
+ * @returns {void}
  */
 export function startQuiz(phaseId) {
-  if (!isValidIndex(phaseId, 1, getPhaseCount())) return;
+  if (!isValidIndex(phaseId, 1, getPhaseCount())) { return; }
   State.setQuizPhase(phaseId);
   State.setQuizIndex(0);
   State.setQuizScore(0);
@@ -28,6 +35,7 @@ export function startQuiz(phaseId) {
 
 /**
  * Open the quiz modal and render the first question.
+ * @returns {void}
  */
 export function openQuiz() {
   openModal('quiz-modal');
@@ -36,6 +44,7 @@ export function openQuiz() {
 
 /**
  * Close the quiz modal.
+ * @returns {void}
  */
 export function closeQuiz() {
   closeModal('quiz-modal');
@@ -43,6 +52,7 @@ export function closeQuiz() {
 
 /**
  * Render the current quiz question using safe DOM methods.
+ * @returns {void}
  */
 export function renderQuestion() {
   const phase = State.getQuizPhase();
@@ -57,7 +67,7 @@ export function renderQuestion() {
   const q = questions[index];
   const letters = ['A', 'B', 'C', 'D'];
   const quizBody = document.getElementById('quiz-body');
-  if (!quizBody) return;
+  if (!quizBody) { return; }
 
   const headerText = t('quiz.header', { phase, current: index + 1, total: questions.length });
 
@@ -72,11 +82,11 @@ export function renderQuestion() {
     </button>`;
   });
 
-  html += '</div><div id="quiz-feedback-area" aria-live="polite"></div>';
+  html += '</div><div id="quiz-feedback-area" aria-live="assertive" aria-atomic="true"></div>';
   quizBody.innerHTML = html;
 
   // Attach click handlers
-  quizBody.querySelectorAll('.quiz-option').forEach(btn => {
+  quizBody.querySelectorAll('.quiz-option').forEach((btn) => {
     btn.addEventListener('click', () => {
       const idx = parseInt(btn.dataset.index, 10);
       if (isValidIndex(idx, 0, q.options.length - 1)) {
@@ -91,24 +101,25 @@ export function renderQuestion() {
 /**
  * Handle a quiz answer selection.
  * @param {number} selected - Index of selected option
+ * @returns {void}
  */
 function handleAnswer(selected) {
   const phase = State.getQuizPhase();
   const index = State.getQuizIndex();
   const questions = QUIZZES[phase];
-  if (!questions || !questions[index]) return;
+  if (!questions || !questions[index]) { return; }
 
   const q = questions[index];
   const isCorrect = selected === q.correct;
 
-  if (isCorrect) State.incrementQuizScore();
+  if (isCorrect) { State.incrementQuizScore(); }
 
   // Disable all options and highlight correct/wrong
   document.querySelectorAll('.quiz-option').forEach((btn, i) => {
     btn.disabled = true;
-    btn.style.pointerEvents = 'none';
-    if (i === q.correct) btn.classList.add('correct');
-    if (i === selected && !isCorrect) btn.classList.add('wrong');
+    btn.setAttribute('aria-disabled', 'true');
+    if (i === q.correct) { btn.classList.add('correct'); }
+    if (i === selected && !isCorrect) { btn.classList.add('wrong'); }
   });
 
   const fbIcon = isCorrect ? t('quiz.correct') : t('quiz.wrong');
@@ -130,11 +141,13 @@ function handleAnswer(selected) {
     });
   }
 
-  announce(isCorrect ? 'Correct!' : `Incorrect. ${q.explanation}`);
+  // Use assertive announcement for immediate quiz feedback
+  announceAssertive(isCorrect ? 'Correct!' : `Incorrect. ${q.explanation}`);
 }
 
 /**
- * Show quiz results and handle pass/fail.
+ * Show quiz results and handle pass/fail logic.
+ * @returns {void}
  */
 function showResults() {
   const phase = State.getQuizPhase();
@@ -151,7 +164,7 @@ function showResults() {
   const scoreLabel = t('quiz.scoreLabel', { score, total, pct });
 
   const quizBody = document.getElementById('quiz-body');
-  if (!quizBody) return;
+  if (!quizBody) { return; }
 
   let html = `<div class="quiz-score">
     <div class="score-emoji" aria-hidden="true">${emoji}</div>
@@ -163,7 +176,7 @@ function showResults() {
     html += `<button class="btn-primary" id="complete-phase-btn">${escapeHTML(completeLabel)}</button>`;
   } else {
     html += `<button class="btn-primary" id="retry-quiz-btn">${t('quiz.retry')}</button>
-             <button class="btn-ghost" id="review-btn" style="margin-left:10px">${t('quiz.review')}</button>`;
+             <button class="btn-ghost quiz-review-btn" id="review-btn">${t('quiz.review')}</button>`;
   }
 
   html += '</div>';
@@ -173,7 +186,7 @@ function showResults() {
   document.getElementById('complete-phase-btn')?.addEventListener('click', () => {
     const count = getPhaseCount();
     State.completePhase(phase);
-    if (phase < count) State.setCurrentPhase(phase + 1);
+    if (phase < count) { State.setCurrentPhase(phase + 1); }
     closeQuiz();
     updateProgressDisplay();
 
@@ -193,5 +206,5 @@ function showResults() {
 
   document.getElementById('review-btn')?.addEventListener('click', closeQuiz);
 
-  announce(`Quiz complete. ${score} out of ${total} correct. ${passed ? 'Passed!' : 'Try again.'}`);
+  announceAssertive(`Quiz complete. ${score} out of ${total} correct. ${passed ? 'Passed!' : 'Try again.'}`);
 }

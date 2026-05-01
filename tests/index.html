@@ -7,7 +7,8 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Inter', system-ui, sans-serif; background: #0f0a0c; color: #f5f0f1; padding: 2rem; }
-        h1 { font-size: 1.8rem; margin-bottom: 1rem; }
+        h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .test-count { color: #b8a3a8; font-size: 0.9rem; margin-bottom: 1rem; }
         .test-summary { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem; margin: 1rem 0; }
         .test-summary h2 { margin-bottom: 1rem; }
         .test-bar { height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; margin-bottom: 1rem; }
@@ -20,37 +21,37 @@
 </head>
 <body>
     <h1>🧪 Election Navigator — Test Suite</h1>
+    <p class="test-count">9 test suites • 80+ assertions</p>
     <p id="loading">Running tests...</p>
     <div id="test-results"></div>
 
-    <!-- Load the app's HTML elements needed for accessibility tests -->
-    <div style="display:none" aria-hidden="true">
-        <!-- Mini version of index.html structure for DOM tests -->
-    </div>
-
     <script type="module">
-        // We need to run tests that require the real DOM, so load index.html in an iframe
-        // and also run unit tests directly
-
         import { displayResults } from './test-runner.js';
         import { runStateTests } from './state.test.js';
         import { runSecurityTests } from './security.test.js';
         import { runDataTests } from './data.test.js';
+        import { runQuizTests } from './quiz.test.js';
+        import { runI18nTests } from './i18n.test.js';
+        import { runAnalyticsTests } from './analytics.test.js';
 
         // Run unit tests (no DOM required)
         runStateTests();
         runSecurityTests();
         runDataTests();
+        runQuizTests();
+        runI18nTests();
+        runAnalyticsTests();
 
-        // For accessibility tests, we load the main page in an iframe
+        // For DOM-dependent tests, load the main page in an iframe
         const iframe = document.createElement('iframe');
         iframe.src = '../index.html';
         iframe.style.display = 'none';
         document.body.appendChild(iframe);
 
         iframe.addEventListener('load', async () => {
-            // Import and run a11y tests against iframe document
             const { runAccessibilityTests } = await import('./accessibility.test.js');
+            const { runNavigationTests } = await import('./navigation.test.js');
+            const { runRendererTests } = await import('./renderer.test.js');
 
             // Override document references to point at iframe
             const origGetById = document.getElementById.bind(document);
@@ -64,11 +65,12 @@
                 const results = iframeDoc.querySelectorAll(sel);
                 return results.length > 0 ? results : origQueryAll(sel);
             };
-            // Temporarily set documentElement for lang test
             const origLang = document.documentElement.lang;
             document.documentElement.lang = iframeDoc.documentElement.lang;
 
             runAccessibilityTests();
+            runNavigationTests();
+            runRendererTests();
 
             // Restore
             document.getElementById = origGetById;

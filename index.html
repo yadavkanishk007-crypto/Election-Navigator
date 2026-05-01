@@ -1,17 +1,48 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Election Navigator — Your interactive, non-partisan guide to understanding the election process from registration to results. Supports multiple languages.">
+    <meta name="description"
+        content="Election Navigator — Your interactive, non-partisan guide to understanding the election process from registration to results. Supports multiple languages.">
     <meta name="theme-color" content="#0f0a0c">
     <meta name="color-scheme" content="dark">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Kanishk Yadav">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src https://www.google-analytics.com https://analytics.google.com; img-src 'self' data:;">
+
+    <!-- SEO: Canonical URL -->
+    <link rel="canonical" href="https://election-navigator.run.app/">
+
+    <!-- SEO: Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Election Navigator — Your Guide to the Election Process">
+    <meta property="og:description" content="A non-partisan, interactive educational tool that guides users through the election process from registration to results.">
+    <meta property="og:url" content="https://election-navigator.run.app/">
+    <meta property="og:site_name" content="Election Navigator">
+    <meta property="og:locale" content="en_US">
+
+    <!-- SEO: Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Election Navigator">
+    <meta name="twitter:description" content="Non-partisan, interactive election education tool with 5 language support.">
+
+    <!-- Security: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://analytics.google.com; img-src 'self' data:; manifest-src 'self'; worker-src 'self';">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="no-referrer">
+
+    <!-- Google Site Verification — Replace YOUR_VERIFICATION_CODE with actual code from Google Search Console -->
+    <meta name="google-site-verification" content="HlpOVd76oJDbWlwBfigXjcZ4m7nC1K3YOTSZlaPAcsY">
     <title>Election Navigator — Your Guide to the Election Process</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ElectionNav">
 
     <!-- Google Structured Data (JSON-LD) -->
     <script type="application/ld+json">
@@ -19,6 +50,7 @@
       "@context": "https://schema.org",
       "@type": "WebApplication",
       "name": "Election Navigator",
+      "url": "https://election-navigator.run.app/",
       "description": "A non-partisan, interactive educational tool that guides users through the election process from registration to results.",
       "applicationCategory": "EducationalApplication",
       "operatingSystem": "Any",
@@ -32,44 +64,44 @@
         "priceCurrency": "USD"
       },
       "inLanguage": ["en", "hi", "ta", "te", "bn"],
-      "isAccessibleForFree": true
+      "isAccessibleForFree": true,
+      "browserRequirements": "Requires JavaScript. Requires ES2020 module support.",
+      "softwareVersion": "2.0.0"
     }
     </script>
 
-    <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX', { anonymize_ip: true, send_page_view: true });
-    </script>
+    <!-- Google Analytics 4 — Externalized for CSP compliance -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RTBHHRLEF7"></script>
+    <script src="js/gtag.js"></script>
 
     <!-- Preconnect & DNS Prefetch -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts — reduced weights, display=swap prevents FOUT -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet" crossorigin="anonymous">
 
-    <!-- Preload Critical CSS -->
-    <link rel="preload" href="css/tokens.css" as="style">
-    <link rel="preload" href="css/base.css" as="style">
-
-    <!-- Modular CSS -->
+    <!-- CSS Stylesheets -->
     <link rel="stylesheet" href="css/tokens.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/neon-grid.css">
 </head>
+
 <body>
     <!-- Skip Navigation Link (Accessibility) -->
-    <a href="#hero" class="skip-link" id="skip-link">Skip to main content</a>
+    <a href="#main-content" class="skip-link" id="skip-link">Skip to main content</a>
 
     <!-- Live Region for Screen Reader Announcements -->
     <div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true" role="status"></div>
+
+    <!-- Assertive Live Region for urgent announcements (quiz feedback) -->
+    <div id="sr-assertive" class="sr-only" aria-live="assertive" aria-atomic="true" role="alert"></div>
 
     <!-- Animated Background -->
     <div class="bg-animation" aria-hidden="true">
@@ -80,7 +112,7 @@
     </div>
 
     <!-- Header -->
-    <header id="main-header" role="banner">
+    <header id="main-header">
         <div class="header-inner">
             <div class="logo">
                 <span class="logo-icon" aria-hidden="true">🗳️</span>
@@ -98,7 +130,8 @@
                 </button>
                 <!-- Language Selector -->
                 <div class="lang-selector" role="group" aria-label="Language selector">
-                    <button id="lang-toggle" class="nav-btn lang-btn" aria-haspopup="listbox" aria-expanded="false" aria-label="Change language">
+                    <button id="lang-toggle" class="nav-btn lang-btn" aria-haspopup="listbox" aria-expanded="false"
+                        aria-label="Change language">
                         <span aria-hidden="true">🌐</span> <span id="lang-current">EN</span>
                     </button>
                     <ul id="lang-dropdown" class="lang-dropdown hidden" role="listbox" aria-label="Select language">
@@ -109,121 +142,141 @@
     </header>
 
     <!-- Main Content -->
-    <main id="main-content" role="main">
+    <main id="main-content">
 
-    <!-- Hero / Welcome Section -->
-    <section id="hero" class="hero-section" aria-labelledby="hero-title">
-        <div class="hero-content">
-            <div class="hero-badge" data-i18n="hero.badge">🎓 ɴᴏɴ-ᴘᴀʀᴛɪꜱᴀɴ • ɪɴᴛᴇʀᴀᴄᴛɪᴠᴇ • ᴇᴅᴜᴄᴀᴛɪᴏɴᴀʟ</div>
-            <div class="terminal-init" id="terminal-init" aria-hidden="true">
-                <span class="terminal-caret">▌</span> <span class="terminal-text" data-i18n="hero.terminal">INITIALIZING NAVIGATOR...</span>
-            </div>
-            <h1 class="hero-title" id="hero-title">
-                <span data-i18n="hero.titleLine1">Your</span> <span class="gradient-text" data-i18n="hero.titleHighlight">Election</span> <span data-i18n="hero.titleLine2">Journey Starts Here</span>
-            </h1>
-            <p class="hero-subtitle" data-i18n="hero.subtitle">
-                I'm your <strong>ᴇʟᴇᴄᴛɪᴏɴ ɴᴀᴠɪɢᴀᴛᴏʀ</strong> — a high-energy, expert guide here to
-                demystify every step of the election process. Let's make democracy easy to understand.
-            </p>
-            <div class="hero-cta">
-                <p class="cta-label" data-i18n="hero.ctaLabel">▌ ꜱᴇʟᴇᴄᴛ ᴋɴᴏᴡʟᴇᴅɢᴇ ʟᴇᴠᴇʟ:</p>
-                <div class="level-selector" id="level-selector" role="group" aria-label="Select knowledge level">
-                    <button class="level-btn" data-level="beginner" id="btn-beginner" aria-label="Beginner — New to elections">
-                        <span class="level-emoji" aria-hidden="true">🌱</span>
-                        <span class="level-name" data-i18n="hero.beginner">Beginner</span>
-                        <span class="level-desc" data-i18n="hero.beginnerDesc">New to elections</span>
-                    </button>
-                    <button class="level-btn" data-level="intermediate" id="btn-intermediate" aria-label="Intermediate — Know the basics">
-                        <span class="level-emoji" aria-hidden="true">📖</span>
-                        <span class="level-name" data-i18n="hero.intermediate">Intermediate</span>
-                        <span class="level-desc" data-i18n="hero.intermediateDesc">Know the basics</span>
-                    </button>
-                    <button class="level-btn" data-level="expert" id="btn-expert" aria-label="Expert — Deep knowledge">
-                        <span class="level-emoji" aria-hidden="true">🎯</span>
-                        <span class="level-name" data-i18n="hero.expert">Expert</span>
-                        <span class="level-desc" data-i18n="hero.expertDesc">Deep knowledge</span>
-                    </button>
+        <!-- Hero / Welcome Section -->
+        <section id="hero" class="hero-section" aria-labelledby="hero-title">
+            <div class="hero-content">
+                <div class="hero-badge" data-i18n="hero.badge">🎓 ɴᴏɴ-ᴘᴀʀᴛɪꜱᴀɴ • ɪɴᴛᴇʀᴀᴄᴛɪᴠᴇ • ᴇᴅᴜᴄᴀᴛɪᴏɴᴀʟ</div>
+                <div class="terminal-init" id="terminal-init" aria-hidden="true">
+                    <span class="terminal-caret">▌</span> <span class="terminal-text"
+                        data-i18n="hero.terminal">INITIALIZING NAVIGATOR...</span>
+                </div>
+                <h1 class="hero-title" id="hero-title">
+                    <span data-i18n="hero.titleLine1">Your</span> <span class="gradient-text"
+                        data-i18n="hero.titleHighlight">Election</span> <span data-i18n="hero.titleLine2">Journey Starts
+                        Here</span>
+                </h1>
+                <p class="hero-subtitle" data-i18n="hero.subtitle">
+                    I'm your <strong>ᴇʟᴇᴄᴛɪᴏɴ ɴᴀᴠɪɢᴀᴛᴏʀ</strong> — a high-energy, expert guide here to
+                    demystify every step of the election process. Let's make democracy easy to understand.
+                </p>
+                <div class="hero-cta">
+                    <p class="cta-label" data-i18n="hero.ctaLabel">▌ ꜱᴇʟᴇᴄᴛ ᴋɴᴏᴡʟᴇᴅɢᴇ ʟᴇᴠᴇʟ:</p>
+                    <div class="level-selector" id="level-selector" role="group" aria-label="Select knowledge level">
+                        <button class="level-btn" data-level="beginner" id="btn-beginner"
+                            aria-label="Beginner — New to elections">
+                            <span class="level-emoji" aria-hidden="true">🌱</span>
+                            <span class="level-name" data-i18n="hero.beginner">Beginner</span>
+                            <span class="level-desc" data-i18n="hero.beginnerDesc">New to elections</span>
+                        </button>
+                        <button class="level-btn" data-level="intermediate" id="btn-intermediate"
+                            aria-label="Intermediate — Know the basics">
+                            <span class="level-emoji" aria-hidden="true">📖</span>
+                            <span class="level-name" data-i18n="hero.intermediate">Intermediate</span>
+                            <span class="level-desc" data-i18n="hero.intermediateDesc">Know the basics</span>
+                        </button>
+                        <button class="level-btn" data-level="expert" id="btn-expert"
+                            aria-label="Expert — Deep knowledge">
+                            <span class="level-emoji" aria-hidden="true">🎯</span>
+                            <span class="level-name" data-i18n="hero.expert">Expert</span>
+                            <span class="level-desc" data-i18n="hero.expertDesc">Deep knowledge</span>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="hero-visual" aria-hidden="true">
-            <div class="hero-card hero-card-1"><span>🗳️</span> Voting Mechanics</div>
-            <div class="hero-card hero-card-2"><span>📋</span> Registration</div>
-            <div class="hero-card hero-card-3"><span>📊</span> Results</div>
-            <div class="hero-card hero-card-4"><span>👥</span> Candidates</div>
-        </div>
-    </section>
-
-    <!-- Region Input Section -->
-    <section id="region-section" class="region-section hidden" aria-labelledby="region-header">
-        <div class="region-card glass-card">
-            <div class="neon-header" id="region-header" data-i18n="region.header">▌║ 📍 ʀᴇɢɪᴏɴ ᴄᴏɴꜰɪɢᴜʀᴀᴛɪᴏɴ ║▌</div>
-            <p data-i18n="region.desc">Enter your country or region for a tailored election timeline — or skip to explore general content.</p>
-            <div class="region-input-group">
-                <label for="region-input" class="sr-only">Enter your country or region</label>
-                <input type="text" id="region-input" placeholder="e.g., United States, India, United Kingdom..." autocomplete="off" maxlength="200" aria-describedby="region-header" data-i18n-placeholder="region.placeholder">
-                <button id="region-submit" class="btn-primary" aria-label="Generate tailored timeline" data-i18n="region.submit">Generate Timeline</button>
+            <div class="hero-visual" aria-hidden="true">
+                <div class="hero-card hero-card-1"><span>🗳️</span> Voting Mechanics</div>
+                <div class="hero-card hero-card-2"><span>📋</span> Registration</div>
+                <div class="hero-card hero-card-3"><span>📊</span> Results</div>
+                <div class="hero-card hero-card-4"><span>👥</span> Candidates</div>
             </div>
-            <button id="region-skip" class="btn-ghost" aria-label="Skip region selection" data-i18n="region.skip">Skip — Show General Info</button>
-        </div>
-    </section>
+        </section>
 
-    <!-- Progress Tracker -->
-    <section id="progress-section" class="progress-section hidden" aria-labelledby="progress-header">
-        <div class="progress-inner">
-            <div class="neon-header" id="progress-header" data-i18n="progress.header">▌║ 📈 ʟᴇᴀʀɴɪɴɢ ᴘʀᴏɢʀᴇꜱꜱ ║▌</div>
-            <div class="unicode-progress-bar" id="unicode-progress" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
-                <span class="progress-label" data-i18n="progress.label">𝗞𝗡𝗢𝗪𝗟𝗘𝗗𝗚𝗘 𝗗𝗘𝗧𝗘𝗖𝗧𝗘𝗗:</span>
-                <span class="progress-bar-track" id="progress-bar-visual">[░░░░░░░░░░]</span>
-                <span class="progress-pct" id="progress-pct">0%</span>
+        <!-- Region Input Section -->
+        <section id="region-section" class="region-section hidden" aria-labelledby="region-heading">
+            <div class="region-card glass-card">
+                <h2 id="region-heading" class="neon-header" data-i18n="region.header">▌║ 📍 ʀᴇɢɪᴏɴ ᴄᴏɴꜰɪɢᴜʀᴀᴛɪᴏɴ ║▌</h2>
+                <p data-i18n="region.desc">Enter your country or region for a tailored election timeline — or skip to
+                    explore general content.</p>
+                <div class="region-input-group">
+                    <label for="region-input" class="sr-only">Enter your country or region</label>
+                    <input type="text" id="region-input" placeholder="e.g., United States, India, United Kingdom..."
+                        autocomplete="off" maxlength="200" aria-describedby="region-heading"
+                        data-i18n-placeholder="region.placeholder">
+                    <button id="region-submit" class="btn-primary" aria-label="Generate tailored timeline"
+                        data-i18n="region.submit">Generate Timeline</button>
+                </div>
+                <button id="region-skip" class="btn-ghost" aria-label="Skip region selection"
+                    data-i18n="region.skip">Skip — Show General Info</button>
             </div>
+        </section>
+
+        <!-- Progress Tracker -->
+        <section id="progress-section" class="progress-section hidden" aria-labelledby="progress-heading">
+            <div class="progress-inner">
+                <h2 id="progress-heading" class="neon-header" data-i18n="progress.header">▌║ 📈 ʟᴇᴀʀɴɪɴɢ ᴘʀᴏɢʀᴇꜱꜱ ║▌</h2>
+                <div class="unicode-progress-bar" id="unicode-progress" role="progressbar" aria-valuenow="0"
+                    aria-valuemin="0" aria-valuemax="100" aria-label="Learning progress">
+                    <span class="progress-label" data-i18n="progress.label">𝗞𝗡𝗢𝗪𝗟𝗘𝗗𝗚𝗘 𝗗𝗘𝗧𝗘𝗖𝗧𝗘𝗗:</span>
+                    <span class="progress-bar-track" id="progress-bar-visual">[░░░░░░░░░░]</span>
+                    <span class="progress-pct" id="progress-pct">0%</span>
+                </div>
+                <!-- Dynamically populated by renderer.js -->
+                <div class="progress-track" id="progress-track" role="list" aria-label="Phase progress steps"></div>
+            </div>
+        </section>
+
+        <!-- Phase Cards Section -->
+        <section id="phases-section" class="phases-section hidden" aria-labelledby="phases-heading">
+            <h2 id="phases-heading" class="neon-header neon-header-center" data-i18n="phases.header">▌║ 📚 ꜱʏꜱᴛᴇᴍ ᴘʜᴀꜱᴇꜱ ║▌</h2>
+            <div class="neon-separator" aria-hidden="true">————————————————————————————————————</div>
+            <p class="section-desc" data-i18n="phases.desc">Click any phase to dive deep. Complete the quiz to unlock
+                the next phase.</p>
             <!-- Dynamically populated by renderer.js -->
-            <div class="progress-track" id="progress-track" role="list" aria-label="Phase progress steps"></div>
-        </div>
-    </section>
+            <div class="phases-grid" id="phases-grid" role="list" aria-label="Learning phases"></div>
+        </section>
 
-    <!-- Phase Cards Section -->
-    <section id="phases-section" class="phases-section hidden" aria-labelledby="phases-header">
-        <div class="neon-header neon-header-center" id="phases-header" data-i18n="phases.header">▌║ 📚 ꜱʏꜱᴛᴇᴍ ᴘʜᴀꜱᴇꜱ ║▌</div>
-        <div class="neon-separator" aria-hidden="true">————————————————————————————————————</div>
-        <p class="section-desc" data-i18n="phases.desc">Click any phase to dive deep. Complete the quiz to unlock the next phase.</p>
-        <!-- Dynamically populated by renderer.js -->
-        <div class="phases-grid" id="phases-grid" role="list" aria-label="Learning phases"></div>
-    </section>
-
-    <!-- Timeline Section -->
-    <section id="timeline-section" class="timeline-section hidden" aria-labelledby="timeline-header">
-        <div class="neon-header neon-header-center" id="timeline-header" data-i18n="timeline.header">▌║ 📅 ᴇʟᴇᴄᴛɪᴏɴ ᴛɪᴍᴇʟɪɴᴇ ║▌</div>
-        <div class="neon-separator" aria-hidden="true">————————————————————————————————————</div>
-        <p class="section-desc" id="timeline-desc" data-i18n="timeline.defaultDesc">A generalized overview of the election cycle.</p>
-        <!-- Dynamically populated by renderer.js -->
-        <div class="timeline" id="timeline-container" role="list" aria-label="Election timeline events"></div>
-    </section>
+        <!-- Timeline Section -->
+        <section id="timeline-section" class="timeline-section hidden" aria-labelledby="timeline-heading">
+            <h2 id="timeline-heading" class="neon-header neon-header-center" data-i18n="timeline.header">▌║ 📅 ᴇʟᴇᴄᴛɪᴏɴ
+                ᴛɪᴍᴇʟɪɴᴇ ║▌</h2>
+            <div class="neon-separator" aria-hidden="true">————————————————————————————————————</div>
+            <p class="section-desc" id="timeline-desc" data-i18n="timeline.defaultDesc">A generalized overview of the
+                election cycle.</p>
+            <!-- Dynamically populated by renderer.js -->
+            <div class="timeline" id="timeline-container" role="list" aria-label="Election timeline events"></div>
+        </section>
 
     </main>
 
     <!-- Quick Actions Bar -->
     <div id="quick-actions" class="quick-actions hidden" role="toolbar" aria-label="Quick actions">
         <div class="qa-terminal-label" aria-hidden="true" data-i18n="quickActions.label">▌ Qᴜɪᴄᴋ-ᴀᴄᴛɪᴏɴ ᴛᴇʀᴍɪɴᴀʟ</div>
-        <button class="qa-btn" id="qa-learn" aria-label="Go to current phase" data-i18n="quickActions.registration">📋 ʀᴇɢɪꜱᴛʀᴀᴛɪᴏɴ</button>
-        <button class="qa-btn" id="qa-timeline" aria-label="Go to timeline" data-i18n="quickActions.timeline">📅 ᴛɪᴍᴇʟɪɴᴇ</button>
+        <button class="qa-btn" id="qa-learn" aria-label="Go to current phase" data-i18n="quickActions.registration">📋
+            ʀᴇɢɪꜱᴛʀᴀᴛɪᴏɴ</button>
+        <button class="qa-btn" id="qa-timeline" aria-label="Go to timeline" data-i18n="quickActions.timeline">📅
+            ᴛɪᴍᴇʟɪɴᴇ</button>
         <button class="qa-btn" id="qa-quiz" aria-label="Start quiz" data-i18n="quickActions.quiz">🧠 Qᴜɪᴢ</button>
         <button class="qa-btn" id="qa-home" aria-label="Return to top" data-i18n="quickActions.home">🏠 ʜᴏᴍᴇ</button>
     </div>
 
     <!-- Phase Detail Modal -->
-    <div id="phase-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="phase-modal-title">
+    <div id="phase-modal" class="modal-overlay hidden" role="dialog" aria-modal="true"
+        aria-labelledby="phase-modal-title">
         <div class="modal-content glass-card">
             <button class="modal-close" id="modal-close-btn" aria-label="Close modal">✕</button>
             <div id="modal-body"></div>
             <div class="modal-footer">
-                <button class="btn-primary" id="modal-quiz-btn" data-i18n="modal.quizBtn">🧠 Check for Understanding</button>
+                <button class="btn-primary" id="modal-quiz-btn" data-i18n="modal.quizBtn">🧠 Check for
+                    Understanding</button>
             </div>
         </div>
     </div>
 
     <!-- Quiz Modal -->
-    <div id="quiz-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="quiz-modal-title">
+    <div id="quiz-modal" class="modal-overlay hidden" role="dialog" aria-modal="true"
+        aria-labelledby="quiz-modal-title" aria-roledescription="quiz wizard">
         <div class="modal-content glass-card quiz-modal-content">
             <button class="modal-close" id="quiz-close-btn" aria-label="Close quiz">✕</button>
             <div id="quiz-body"></div>
@@ -231,33 +284,41 @@
     </div>
 
     <!-- Completion Celebration -->
-    <div id="celebration" class="celebration hidden" role="alertdialog" aria-modal="true" aria-labelledby="celebration-title">
+    <div id="celebration" class="celebration hidden" role="alertdialog" aria-modal="true"
+        aria-labelledby="celebration-title">
         <div class="celebration-content glass-card">
             <div class="celebration-emoji" aria-hidden="true">🎉</div>
             <h2 id="celebration-title" data-i18n="celebration.title">Congratulations!</h2>
-            <p id="celebration-text" data-i18n="celebration.text">You've completed all phases! You're now an Election Expert!</p>
-            <button class="btn-primary" id="celebration-close-btn" data-i18n="celebration.btn">Continue Exploring</button>
+            <p id="celebration-text" data-i18n="celebration.text">You've completed all phases! You're now an Election
+                Expert!</p>
+            <button class="btn-primary" id="celebration-close-btn" data-i18n="celebration.btn">Continue
+                Exploring</button>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer id="main-footer" role="contentinfo">
+    <footer id="main-footer">
         <div class="footer-inner">
             <nav class="footer-nav" aria-label="Footer navigation">
-                <button class="footer-nav-btn" type="button" aria-label="Navigate to phases" data-nav="phases">📑 <span data-i18n="header.phases">ᴘʜᴀꜱᴇꜱ</span></button>
+                <button class="footer-nav-btn" type="button" aria-label="Navigate to phases" data-nav="phases">📑 <span
+                        data-i18n="header.phases">ᴘʜᴀꜱᴇꜱ</span></button>
                 <span class="footer-sep" aria-hidden="true">—</span>
-                <button class="footer-nav-btn" type="button" aria-label="Navigate to timeline" data-nav="timeline">📅 <span data-i18n="header.timeline">ᴛɪᴍᴇʟɪɴᴇ</span></button>
+                <button class="footer-nav-btn" type="button" aria-label="Navigate to timeline" data-nav="timeline">📅
+                    <span data-i18n="header.timeline">ᴛɪᴍᴇʟɪɴᴇ</span></button>
                 <span class="footer-sep" aria-hidden="true">—</span>
-                <button class="footer-nav-btn" type="button" aria-label="Navigate to quiz" data-nav="quiz">🧠 <span data-i18n="header.quiz">Qᴜɪᴢ</span></button>
+                <button class="footer-nav-btn" type="button" aria-label="Navigate to quiz" data-nav="quiz">🧠 <span
+                        data-i18n="header.quiz">Qᴜɪᴢ</span></button>
                 <span class="footer-sep" aria-hidden="true">—</span>
                 <button class="footer-nav-btn" type="button" aria-label="Return to top" data-nav="home">🏠 Home</button>
             </nav>
             <p data-i18n="footer.tagline">🗳️ <strong>ᴇʟᴇᴄᴛɪᴏɴ ɴᴀᴠɪɢᴀᴛᴏʀ</strong> — Non-partisan educational tool</p>
-            <p class="footer-note" data-i18n="footer.disclaimer">This tool provides general election education. Always check your local election authority for official information.</p>
+            <p class="footer-note" data-i18n="footer.disclaimer">This tool provides general election education. Always
+                check your local election authority for official information.</p>
         </div>
     </footer>
 
     <!-- ES Module Entry Point -->
     <script type="module" src="js/main.js"></script>
 </body>
+
 </html>
