@@ -1,0 +1,123 @@
+/* ============================================================
+   NEON GRID PROTOCOL — Terminal-style UI elements
+   ============================================================ */
+
+/* Terminal Init Greeting */
+.terminal-init {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--accent-2);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: rgba(225, 29, 72, 0.06);
+  border: 1px solid rgba(225, 29, 72, 0.15);
+  border-radius: var(--radius-sm);
+  letter-spacing: 2px;
+}
+
+.terminal-caret {
+  color: var(--accent-1);
+  animation: caretBlink 1s step-end infinite;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+@keyframes caretBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Neon Block Headers */
+.neon-header {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  color: var(--accent-2);
+  letter-spacing: 1.5px;
+  padding: 8px 0;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 0 10px var(--accent-glow), 0 0 20px rgba(225, 29, 72, 0.15);
+}
+
+.neon-header-center { text-align: center; }
+
+/* Neon Separator */
+.neon-separator {
+  text-align: center;
+  color: var(--accent-1);
+  opacity: 0.3;
+  font-size: 0.7rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: -1px;
+}
+
+/* Unicode Progress Bar */
+.unicode-progress-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  padding: 12px 20px;
+  margin-bottom: 1.5rem;
+  background: rgba(225, 29, 72, 0.05);
+  border: 1px solid rgba(225, 29, 72, 0.12);
+  border-radius: var(--radius-md);
+}
+
+.progress-label { color: var(--text-muted); font-size: 0.75rem; font-weight: 700; }
+.progress-bar-track { color: var(--accent-2); font-size: 1rem; letter-spacing: 1px; }
+.progress-pct { color: var(--accent-3); font-weight: 700; font-size: 0.95rem; }
+
+/* Glow-Tab Status Cards */
+.glow-tab {
+  font-family: var(--font-mono) !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.5px;
+  padding: 6px 12px !important;
+  border-radius: var(--radius-sm) !important;
+  background: rgba(225, 29, 72, 0.06) !important;
+  border: 1px solid rgba(225, 29, 72, 0.15) !important;
+  color: var(--accent-3) !important;
+  text-align: center;
+}
+
+/* Quick-Action Terminal Label */
+.qa-terminal-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent-3);
+  letter-spacing: 1px;
+  padding-right: 8px;
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+/* Footer Navigation */
+.footer-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-nav-btn {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent-3);
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.5px;
+}
+
+.footer-nav-btn:hover {
+  color: var(--accent-1);
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
+.footer-sep { color: var(--text-muted); opacity: 0.3; }

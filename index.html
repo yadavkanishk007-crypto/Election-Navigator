@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Election Navigator — Your interactive, non-partisan guide to understanding the election process from registration to results.">
+    <title>Election Navigator — Your Guide to the Election Process</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Modular CSS -->
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/neon-grid.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+        <div class="bg-orb bg-orb-3"></div>
+        <div class="bg-grid"></div>
+    </div>
+
+    <!-- Header -->
+    <header id="main-header">
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-icon">🗳️</span>
+                <span class="logo-text">ᴇʟᴇᴄᴛɪᴏɴ ɴᴀᴠɪɢᴀᴛᴏʀ</span>
+            </div>
+            <nav class="header-nav">
+                <button id="nav-phases" class="nav-btn">
+                    <span>📑</span> ᴘʜᴀꜱᴇꜱ
+                </button>
+                <button id="nav-timeline" class="nav-btn">
+                    <span>📅</span> ᴛɪᴍᴇʟɪɴᴇ
+                </button>
+                <button id="nav-quiz" class="nav-btn">
+                    <span>🧠</span> Qᴜɪᴢ
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero / Welcome Section -->
+    <section id="hero" class="hero-section">
+        <div class="hero-content">
+            <div class="hero-badge">🎓 ɴᴏɴ-ᴘᴀʀᴛɪꜱᴀɴ • ɪɴᴛᴇʀᴀᴄᴛɪᴠᴇ • ᴇᴅᴜᴄᴀᴛɪᴏɴᴀʟ</div>
+            <div class="terminal-init" id="terminal-init">
+                <span class="terminal-caret">▌</span> <span class="terminal-text">INITIALIZING NAVIGATOR...</span>
+            </div>
+            <h1 class="hero-title">
+                Your <span class="gradient-text">Election</span> Journey<br>Starts Here
+            </h1>
+            <p class="hero-subtitle">
+                I'm your <strong>ᴇʟᴇᴄᴛɪᴏɴ ɴᴀᴠɪɢᴀᴛᴏʀ</strong> — a high-energy, expert guide here to
+                demystify every step of the election process. Let's make democracy easy to understand.
+            </p>
+            <div class="hero-cta">
+                <p class="cta-label">▌ ꜱᴇʟᴇᴄᴛ ᴋɴᴏᴡʟᴇᴅɢᴇ ʟᴇᴠᴇʟ:</p>
+                <div class="level-selector" id="level-selector">
+                    <button class="level-btn" data-level="beginner" id="btn-beginner">
+                        <span class="level-emoji">🌱</span>
+                        <span class="level-name">Beginner</span>
+                        <span class="level-desc">New to elections</span>
+                    </button>
+                    <button class="level-btn" data-level="intermediate" id="btn-intermediate">
+                        <span class="level-emoji">📖</span>
+                        <span class="level-name">Intermediate</span>
+                        <span class="level-desc">Know the basics</span>
+                    </button>
+                    <button class="level-btn" data-level="expert" id="btn-expert">
+                        <span class="level-emoji">🎯</span>
+                        <span class="level-name">Expert</span>
+                        <span class="level-desc">Deep knowledge</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="hero-card hero-card-1"><span>🗳️</span> Voting Mechanics</div>
+            <div class="hero-card hero-card-2"><span>📋</span> Registration</div>
+            <div class="hero-card hero-card-3"><span>📊</span> Results</div>
+            <div class="hero-card hero-card-4"><span>👥</span> Candidates</div>
+        </div>
+    </section>
+
+    <!-- Region Input Section -->
+    <section id="region-section" class="region-section hidden">
+        <div class="region-card glass-card">
+            <div class="neon-header">▌║ 📍 ʀᴇɢɪᴏɴ ᴄᴏɴꜰɪɢᴜʀᴀᴛɪᴏɴ ║▌</div>
+            <p>Enter your country or region for a tailored election timeline — or skip to explore general content.</p>
+            <div class="region-input-group">
+                <input type="text" id="region-input" placeholder="e.g., United States, India, United Kingdom..." autocomplete="off">
+                <button id="region-submit" class="btn-primary">Generate Timeline</button>
+            </div>
+            <button id="region-skip" class="btn-ghost">Skip — Show General Info</button>
+        </div>
+    </section>
+
+    <!-- Progress Tracker -->
+    <section id="progress-section" class="progress-section hidden">
+        <div class="progress-inner">
+            <div class="neon-header">▌║ 📈 ʟᴇᴀʀɴɪɴɢ ᴘʀᴏɢʀᴇꜱꜱ ║▌</div>
+            <div class="unicode-progress-bar" id="unicode-progress">
+                <span class="progress-label">𝗞𝗡𝗢𝗪𝗟𝗘𝗗𝗚𝗘 𝗗𝗘𝗧𝗘𝗖𝗧𝗘𝗗:</span>
+                <span class="progress-bar-track" id="progress-bar-visual">[░░░░░░░░░░]</span>
+                <span class="progress-pct" id="progress-pct">0%</span>
+            </div>
+            <!-- Dynamically populated by renderer.js -->
+            <div class="progress-track" id="progress-track"></div>
+        </div>
+    </section>
+
+    <!-- Phase Cards Section -->
+    <section id="phases-section" class="phases-section hidden">
+        <div class="neon-header neon-header-center">▌║ 📚 ꜱʏꜱᴛᴇᴍ ᴘʜᴀꜱᴇꜱ ║▌</div>
+        <div class="neon-separator">————————————————————————————————————</div>
+        <p class="section-desc">Click any phase to dive deep. Complete the quiz to unlock the next phase.</p>
+        <!-- Dynamically populated by renderer.js -->
+        <div class="phases-grid" id="phases-grid"></div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section id="timeline-section" class="timeline-section hidden">
+        <div class="neon-header neon-header-center">▌║ 📅 ᴇʟᴇᴄᴛɪᴏɴ ᴛɪᴍᴇʟɪɴᴇ ║▌</div>
+        <div class="neon-separator">————————————————————————————————————</div>
+        <p class="section-desc" id="timeline-desc">A generalized overview of the election cycle.</p>
+        <!-- Dynamically populated by renderer.js -->
+        <div class="timeline" id="timeline-container"></div>
+    </section>
+
+    <!-- Quick Actions Bar -->
+    <div id="quick-actions" class="quick-actions hidden">
+        <div class="qa-terminal-label">▌ Qᴜɪᴄᴋ-ᴀᴄᴛɪᴏɴ ᴛᴇʀᴍɪɴᴀʟ</div>
+        <button class="qa-btn" id="qa-learn">📋 ʀᴇɢɪꜱᴛʀᴀᴛɪᴏɴ</button>
+        <button class="qa-btn" id="qa-timeline">📅 ᴛɪᴍᴇʟɪɴᴇ</button>
+        <button class="qa-btn" id="qa-quiz">🧠 Qᴜɪᴢ</button>
+        <button class="qa-btn" id="qa-home">🏠 ʜᴏᴍᴇ</button>
+    </div>
+
+    <!-- Phase Detail Modal -->
+    <div id="phase-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-card">
+            <button class="modal-close" id="modal-close-btn">✕</button>
+            <div id="modal-body"></div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="modal-quiz-btn">🧠 Check for Understanding</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quiz-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-card quiz-modal-content">
+            <button class="modal-close" id="quiz-close-btn">✕</button>
+            <div id="quiz-body"></div>
+        </div>
+    </div>
+
+    <!-- Completion Celebration -->
+    <div id="celebration" class="celebration hidden">
+        <div class="celebration-content glass-card">
+            <div class="celebration-emoji">🎉</div>
+            <h2>Congratulations!</h2>
+            <p id="celebration-text">You've completed all phases! You're now an Election Expert!</p>
+            <button class="btn-primary">Continue Exploring</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="main-footer">
+        <div class="footer-inner">
+            <div class="footer-nav">
+                <span class="footer-nav-btn">📑 ᴘʜᴀꜱᴇꜱ</span>
+                <span class="footer-sep">—</span>
+                <span class="footer-nav-btn">📅 ᴛɪᴍᴇʟɪɴᴇ</span>
+                <span class="footer-sep">—</span>
+                <span class="footer-nav-btn">🧠 Qᴜɪᴢ</span>
+                <span class="footer-sep">—</span>
+                <span class="footer-nav-btn">🏠 ʜᴏᴍᴇ</span>
+            </div>
+            <p>🗳️ <strong>ᴇʟᴇᴄᴛɪᴏɴ ɴᴀᴠɪɢᴀᴛᴏʀ</strong> — Non-partisan educational tool</p>
+            <p class="footer-note">This tool provides general election education. Always check your local election authority for official information.</p>
+        </div>
+    </footer>
+
+    <!-- ES Module Entry Point -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

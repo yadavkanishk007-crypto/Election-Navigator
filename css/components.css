@@ -1,0 +1,276 @@
+/* ============================================================
+   COMPONENTS — Buttons, Cards, Modals, Tags, Quiz, Celebration
+   ============================================================ */
+
+/* ----- Buttons ----- */
+.btn-primary {
+  background: var(--gradient-primary);
+  color: #fff;
+  border: none;
+  padding: 12px 28px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: var(--transition);
+  box-shadow: 0 4px 15px var(--accent-glow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px var(--accent-glow);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 10px 24px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.btn-ghost:hover {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+
+.qa-btn {
+  padding: 10px 18px;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.qa-btn:hover {
+  background: rgba(225, 29, 72, 0.15);
+  color: var(--text-primary);
+  border-color: var(--accent-1);
+}
+
+/* ----- Phase Cards ----- */
+.phase-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.phase-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.phase-card:hover { transform: translateY(-4px); border-color: var(--border-hover); }
+.phase-card:hover::before { opacity: 0.05; }
+.phase-card.locked { opacity: 0.5; cursor: not-allowed; }
+.phase-card.locked:hover { transform: none; }
+.phase-card.active { border-color: rgba(225, 29, 72, 0.3); }
+.phase-card.done { border-color: rgba(16, 185, 129, 0.3); }
+
+.phase-number {
+  position: absolute;
+  top: 12px; right: 16px;
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.04);
+  z-index: 0;
+}
+
+.phase-icon { font-size: 2rem; margin-bottom: 0.75rem; position: relative; z-index: 1; }
+
+.phase-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.phase-card p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.phase-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1rem; position: relative; z-index: 1; }
+
+.tag {
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.phase-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  position: relative;
+  z-index: 1;
+}
+
+/* ----- Modals ----- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 700px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 2.5rem;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.modal-close:hover { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+.modal-footer { margin-top: 2rem; display: flex; justify-content: center; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Modal content typography */
+#modal-body h2 { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 0.5rem; }
+#modal-body .modal-phase-label { font-size: 0.85rem; color: var(--accent-3); font-weight: 600; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
+#modal-body h3 { font-family: var(--font-display); font-size: 1.15rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--accent-3); }
+#modal-body p { color: var(--text-secondary); margin-bottom: 0.75rem; line-height: 1.7; }
+#modal-body ul { list-style: none; padding: 0; margin-bottom: 1rem; }
+#modal-body ul li { padding: 6px 0 6px 20px; position: relative; color: var(--text-secondary); font-size: 0.92rem; }
+#modal-body ul li::before { content: '→'; position: absolute; left: 0; color: var(--accent-1); font-weight: 700; }
+#modal-body .key-term { color: var(--accent-3); font-weight: 600; }
+
+#modal-body .info-box {
+  background: rgba(225, 29, 72, 0.08);
+  border: 1px solid rgba(225, 29, 72, 0.2);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  margin: 1rem 0;
+}
+
+#modal-body .info-box p { color: var(--text-primary); margin: 0; }
+
+/* ----- Quiz ----- */
+.quiz-modal-content { max-width: 600px; }
+#quiz-body h2 { font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 0.25rem; }
+#quiz-body .quiz-phase-label { font-size: 0.85rem; color: var(--accent-3); margin-bottom: 1.5rem; }
+#quiz-body .quiz-question { font-size: 1.05rem; font-weight: 500; margin-bottom: 1.25rem; line-height: 1.6; }
+
+.quiz-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
+
+.quiz-option {
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 2px solid var(--border);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  text-align: left;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quiz-option:hover { border-color: var(--accent-1); background: rgba(225, 29, 72, 0.08); }
+.quiz-option.correct { border-color: var(--success); background: rgba(16, 185, 129, 0.1); }
+.quiz-option.wrong { border-color: var(--danger); background: rgba(239, 68, 68, 0.1); }
+
+.quiz-option .opt-letter {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.quiz-feedback {
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.quiz-feedback.correct-fb { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--success); }
+.quiz-feedback.wrong-fb { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--danger); }
+.quiz-next-btn { margin-top: 0.5rem; }
+
+.quiz-score { text-align: center; padding: 2rem; }
+.quiz-score .score-emoji { font-size: 3rem; margin-bottom: 1rem; }
+.quiz-score h3 { font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0.5rem; }
+.quiz-score p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+
+/* ----- Celebration ----- */
+.celebration {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.celebration-content { padding: 3rem; text-align: center; max-width: 450px; }
+.celebration-emoji { font-size: 4rem; margin-bottom: 1rem; animation: celebBounce 1s ease infinite; }
+@keyframes celebBounce { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+.celebration-content h2 { font-family: var(--font-display); font-size: 2rem; margin-bottom: 0.5rem; }
+.celebration-content p { color: var(--text-secondary); margin-bottom: 1.5rem; }
