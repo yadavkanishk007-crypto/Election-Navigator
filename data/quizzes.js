@@ -6,7 +6,7 @@
  * 2. Each question needs: q, options[], correct (0-indexed), explanation
  * 3. Minimum 2 questions recommended per phase
  */
-export const QUIZZES = {
+export const QUIZZES = Object.freeze({
   1: [
     {
       q: "What is the most common minimum voting age worldwide?",
@@ -90,4 +90,4 @@ export const QUIZZES = {
       explanation: "The transition of power is the period between election certification and inauguration when authority is transferred."
     }
   ]
-};
+});

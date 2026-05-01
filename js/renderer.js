@@ -1,198 +1,264 @@
 /**
- * Renderer — All DOM rendering logic
- * 
- * Dynamically generates phase cards, progress tracker steps,
- * timeline items, and modal content from data files.
- * Reads state from state.js, reads content from data/*.js.
+ * Renderer — All DOM rendering logic with safe HTML, i18n, and efficiency
+ * @module renderer
  */
 
 import { PHASES, getPhaseCount } from '../data/phases.js';
 import { getTimeline } from '../data/timelines.js';
 import * as State from './state.js';
+import { t } from './i18n.js';
+import { sanitizeHTML, escapeHTML } from './security.js';
+import { announce } from './navigation.js';
 
-// ----- Phase Cards (dynamic) -----
+/** @type {Object} Cached DOM element references for efficiency */
+const _cache = {};
 
 /**
- * Render all phase cards into #phases-grid.
+ * Get a cached DOM element reference.
+ * @param {string} id - Element ID
+ * @returns {HTMLElement|null}
+ */
+function getEl(id) {
+  if (!_cache[id]) _cache[id] = document.getElementById(id);
+  return _cache[id];
+}
+
+/**
+ * Render all phase cards into #phases-grid using DocumentFragment.
  * Called once on init. Status is updated separately.
  */
 export function renderPhaseCards() {
-  const grid = document.getElementById('phases-grid');
+  const grid = getEl('phases-grid');
   if (!grid) return;
 
   const count = getPhaseCount();
-  let html = '';
+  const fragment = document.createDocumentFragment();
 
   for (let i = 1; i <= count; i++) {
     const phase = PHASES[i];
     const isFirst = i === 1;
 
-    html += `
-      <div class="phase-card ${isFirst ? 'active' : 'locked'}" id="phase-card-${i}" data-phase="${i}">
-        <div class="phase-number">${String(i).padStart(2, '0')}</div>
-        <div class="phase-icon">${phase.icon}</div>
-        <h3>${phase.title}</h3>
-        <p>${phase.sections[0].text.substring(0, 100)}...</p>
-        <div class="phase-tags">
-          ${phase.sections.map(s => `<span class="tag">${s.heading.split(' ').pop()}</span>`).join('')}
-        </div>
-        <div class="phase-status glow-tab" id="status-${i}">
-          ${isFirst ? '[ ꜱᴛᴀᴛᴜꜱ: 🟢 ʀᴇᴀᴅʏ ]' : '[ ꜱᴛᴀᴛᴜꜱ: 🔴 ʟᴏᴄᴋᴇᴅ ]'}
-        </div>
-      </div>`;
+    const card = document.createElement('div');
+    card.className = `phase-card ${isFirst ? 'active' : 'locked'}`;
+    card.id = `phase-card-${i}`;
+    card.dataset.phase = String(i);
+    card.setAttribute('role', 'listitem');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', `Phase ${i}: ${escapeHTML(phase.title)} — ${isFirst ? 'Ready' : 'Locked'}`);
+
+    const statusText = isFirst ? t('phases.statusReady') : t('phases.statusLocked');
+    const truncatedText = escapeHTML(phase.sections[0].text.substring(0, 100));
+    const tags = phase.sections.map(s => `<span class="tag">${escapeHTML(s.heading.split(' ').pop())}</span>`).join('');
+
+    card.innerHTML = `
+      <div class="phase-number" aria-hidden="true">${String(i).padStart(2, '0')}</div>
+      <div class="phase-icon" aria-hidden="true">${phase.icon}</div>
+      <h3>${escapeHTML(phase.title)}</h3>
+      <p>${truncatedText}...</p>
+      <div class="phase-tags">${tags}</div>
+      <div class="phase-status glow-tab" id="status-${i}">${statusText}</div>`;
+
+    card.addEventListener('click', () => window.openPhase(i));
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        window.openPhase(i);
+      }
+    });
+
+    fragment.appendChild(card);
   }
 
-  grid.innerHTML = html;
-
-  // Attach click handlers
-  grid.querySelectorAll('.phase-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const phase = parseInt(card.dataset.phase);
-      window.openPhase(phase);
-    });
-  });
+  grid.innerHTML = '';
+  grid.appendChild(fragment);
 }
 
-// ----- Progress Tracker (dynamic) -----
-
 /**
- * Render progress step dots into #progress-track.
- * Called once on init. Updated via updateProgressDisplay().
+ * Render progress step dots into #progress-track using DocumentFragment.
  */
 export function renderProgressSteps() {
-  const track = document.getElementById('progress-track');
+  const track = getEl('progress-track');
   if (!track) return;
 
   const count = getPhaseCount();
-  let html = '';
+  const fragment = document.createDocumentFragment();
 
   for (let i = 1; i <= count; i++) {
-    html += `
-      <div class="progress-step ${i === 1 ? 'active' : ''}" id="prog-${i}">
-        <div class="step-dot">${i}</div>
-        <span>${PHASES[i].title.split(' ')[0]}</span>
-      </div>`;
+    const step = document.createElement('div');
+    step.className = `progress-step ${i === 1 ? 'active' : ''}`;
+    step.id = `prog-${i}`;
+    step.setAttribute('role', 'listitem');
+    step.setAttribute('aria-label', `Phase ${i}: ${PHASES[i].title.split(' ')[0]}`);
+    if (i === 1) step.setAttribute('aria-current', 'step');
+
+    step.innerHTML = `
+      <div class="step-dot" aria-hidden="true">${i}</div>
+      <span>${escapeHTML(PHASES[i].title.split(' ')[0])}</span>`;
+
+    fragment.appendChild(step);
 
     if (i < count) {
-      html += `<div class="progress-line" id="line-${i}"></div>`;
+      const line = document.createElement('div');
+      line.className = 'progress-line';
+      line.id = `line-${i}`;
+      line.setAttribute('aria-hidden', 'true');
+      fragment.appendChild(line);
     }
   }
 
-  track.innerHTML = html;
+  track.innerHTML = '';
+  track.appendChild(fragment);
 }
-
-// ----- Update Progress Display -----
 
 /**
  * Update progress tracker, unicode bar, and phase card statuses.
- * Called whenever state changes.
+ * Uses requestAnimationFrame for visual updates.
  */
 export function updateProgressDisplay() {
-  const completed = State.getCompletedPhases();
-  const current = State.getCurrentPhase();
-  const count = getPhaseCount();
+  requestAnimationFrame(() => {
+    const completed = State.getCompletedPhases();
+    const current = State.getCurrentPhase();
+    const count = getPhaseCount();
 
-  // Update step dots
-  for (let i = 1; i <= count; i++) {
-    const step = document.getElementById(`prog-${i}`);
-    const card = document.getElementById(`phase-card-${i}`);
-    const status = document.getElementById(`status-${i}`);
+    for (let i = 1; i <= count; i++) {
+      const step = getEl(`prog-${i}`);
+      const card = getEl(`phase-card-${i}`);
+      const status = getEl(`status-${i}`);
 
-    if (!step || !card || !status) continue;
+      if (!step || !card || !status) continue;
 
-    step.className = 'progress-step';
-    card.className = 'phase-card';
+      // Reset
+      step.className = 'progress-step';
+      step.removeAttribute('aria-current');
+      card.className = 'phase-card';
 
-    if (completed.includes(i)) {
-      step.classList.add('completed');
-      card.classList.add('done');
-      status.className = 'phase-status glow-tab';
-      status.innerHTML = '[ ꜱᴛᴀᴛᴜꜱ: ✅ ᴄᴏᴍᴘʟᴇᴛᴇ ]';
-    } else if (i === current) {
-      step.classList.add('active');
-      card.classList.add('active');
-      status.className = 'phase-status glow-tab';
-      status.innerHTML = '[ ꜱᴛᴀᴛᴜꜱ: 🟢 ʀᴇᴀᴅʏ ]';
-    } else {
-      card.classList.add('locked');
-      status.className = 'phase-status glow-tab';
-      status.innerHTML = '[ ꜱᴛᴀᴛᴜꜱ: 🔴 ʟᴏᴄᴋᴇᴅ ]';
+      if (completed.includes(i)) {
+        step.classList.add('completed');
+        card.classList.add('done');
+        status.textContent = t('phases.statusComplete');
+        card.setAttribute('aria-label', `Phase ${i}: ${PHASES[i].title} — Complete`);
+      } else if (i === current) {
+        step.classList.add('active');
+        step.setAttribute('aria-current', 'step');
+        card.classList.add('active');
+        status.textContent = t('phases.statusReady');
+        card.setAttribute('aria-label', `Phase ${i}: ${PHASES[i].title} — Ready`);
+      } else {
+        card.classList.add('locked');
+        status.textContent = t('phases.statusLocked');
+        card.setAttribute('aria-label', `Phase ${i}: ${PHASES[i].title} — Locked`);
+      }
+
+      if (i < count) {
+        const line = getEl(`line-${i}`);
+        if (line) line.className = completed.includes(i) ? 'progress-line filled' : 'progress-line';
+      }
     }
 
-    if (i < count) {
-      const line = document.getElementById(`line-${i}`);
-      if (line) line.className = completed.includes(i) ? 'progress-line filled' : 'progress-line';
+    // Unicode progress bar
+    const pct = Math.round((completed.length / count) * 100);
+    const filled = Math.round((completed.length / count) * 10);
+    const empty = 10 - filled;
+    const bar = '█'.repeat(filled) + '░'.repeat(empty);
+
+    const visual = getEl('progress-bar-visual');
+    const pctEl = getEl('progress-pct');
+    const progressBar = getEl('unicode-progress');
+    if (visual) visual.textContent = `[${bar}]`;
+    if (pctEl) pctEl.textContent = `${pct}%`;
+    if (progressBar) progressBar.setAttribute('aria-valuenow', String(pct));
+
+    // Quick action label
+    const labels = {
+      1: t('quickActions.registration'),
+      2: '👥 ' + t('header.phases'),
+      3: '🗳️ ' + t('header.phases'),
+      4: '📊 ' + t('header.phases')
+    };
+    const qaLearn = getEl('qa-learn');
+    if (qaLearn) qaLearn.textContent = labels[current] || labels[1];
+
+    // Announce to screen readers
+    if (completed.length > 0) {
+      announce(`Progress: ${pct}% complete. ${completed.length} of ${count} phases finished.`);
     }
-  }
-
-  // Update unicode progress bar
-  const pct = Math.round((completed.length / count) * 100);
-  const filled = Math.round((completed.length / count) * 10);
-  const empty = 10 - filled;
-  const bar = '█'.repeat(filled) + '░'.repeat(empty);
-
-  const visual = document.getElementById('progress-bar-visual');
-  const pctEl = document.getElementById('progress-pct');
-  if (visual) visual.textContent = `[${bar}]`;
-  if (pctEl) pctEl.textContent = `${pct}%`;
-
-  // Update quick action label
-  const labels = {
-    1: '📋 ʀᴇɢɪꜱᴛʀᴀᴛɪᴏɴ',
-    2: '👥 ᴄᴀɴᴅɪᴅᴀᴛᴇꜱ',
-    3: '🗳️ ᴠᴏᴛɪɴɢ',
-    4: '📊 ʀᴇꜱᴜʟᴛꜱ'
-  };
-  const qaLearn = document.getElementById('qa-learn');
-  if (qaLearn) qaLearn.textContent = labels[current] || labels[1];
+  });
 }
 
-// ----- Timeline -----
-
 /**
- * Render timeline items from data.
- * @param {string|null} region
+ * Render timeline items from data using DocumentFragment.
+ * @param {string|null} region - Lowercase region name
  */
 export function renderTimeline(region) {
-  const container = document.getElementById('timeline-container');
-  const desc = document.getElementById('timeline-desc');
+  const container = getEl('timeline-container');
+  const desc = getEl('timeline-desc');
   if (!container) return;
 
   const { items, label } = getTimeline(region);
   if (desc) desc.textContent = label;
 
-  container.innerHTML = items.map(item => `
-    <div class="tl-item">
-      <div class="tl-dot"></div>
-      <h4>${item.title}</h4>
-      <div class="tl-date">${item.date}</div>
-      <p>${item.desc}</p>
-    </div>
-  `).join('');
-}
+  const fragment = document.createDocumentFragment();
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'tl-item';
+    div.setAttribute('role', 'listitem');
+    div.innerHTML = `
+      <div class="tl-dot" aria-hidden="true"></div>
+      <h4>${escapeHTML(item.title)}</h4>
+      <div class="tl-date">${escapeHTML(item.date)}</div>
+      <p>${escapeHTML(item.desc)}</p>`;
+    fragment.appendChild(div);
+  });
 
-// ----- Phase Modal Content -----
+  container.innerHTML = '';
+  container.appendChild(fragment);
+}
 
 /**
  * Render phase content into the modal body.
- * @param {number} phaseId
+ * Uses sanitizeHTML for trusted data source HTML.
+ * @param {number} phaseId - Phase number
  */
 export function renderPhaseModal(phaseId) {
   const data = PHASES[phaseId];
   if (!data) return;
 
-  let html = `<div class="neon-header">▌║ 💖 ꜱʏꜱᴛᴇᴍ ᴘʜᴀꜱᴇ: ${data.title.toUpperCase()} ║▌</div>`;
-  html += `<h2>${data.icon} ${data.title}</h2>`;
+  const modalBody = getEl('modal-body');
+  if (!modalBody) return;
+
+  let html = `<div class="neon-header" id="phase-modal-title">▌║ 💖 ${escapeHTML(data.title.toUpperCase())} ║▌</div>`;
+  html += `<h2>${data.icon} ${escapeHTML(data.title)}</h2>`;
 
   data.sections.forEach(s => {
-    html += `<h3>${s.heading}</h3><p>${s.text}</p>`;
+    html += `<h3>${sanitizeHTML(s.heading)}</h3><p>${sanitizeHTML(s.text)}</p>`;
     if (s.list) {
-      html += '<ul>' + s.list.map(li => `<li>${li}</li>`).join('') + '</ul>';
+      html += '<ul>' + s.list.map(li => `<li>${sanitizeHTML(li)}</li>`).join('') + '</ul>';
     }
     if (s.infoBox) {
-      html += `<div class="info-box"><p>${s.infoBox}</p></div>`;
+      html += `<div class="info-box"><p>${sanitizeHTML(s.infoBox)}</p></div>`;
     }
   });
 
-  document.getElementById('modal-body').innerHTML = html;
+  modalBody.innerHTML = html;
+}
+
+/**
+ * Apply i18n translations to all elements with data-i18n attributes.
+ */
+export function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const translated = t(key);
+    if (translated !== key) {
+      el.textContent = translated;
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    const translated = t(key);
+    if (translated !== key) {
+      el.placeholder = translated;
+    }
+  });
 }

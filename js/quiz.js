@@ -1,24 +1,25 @@
 /**
- * Quiz Engine — Self-contained quiz module
- * 
- * Reads questions from data/quizzes.js.
- * Uses state.js for quiz state tracking.
- * Emits phaseCompleted via state bus on pass.
+ * Quiz Engine — Self-contained quiz module with security and i18n
+ * @module quiz
  */
 
 import { QUIZZES } from '../data/quizzes.js';
 import { getPhaseCount } from '../data/phases.js';
 import * as State from './state.js';
-import { openModal, closeModal } from './navigation.js';
+import { openModal, closeModal, announce } from './navigation.js';
 import { updateProgressDisplay } from './renderer.js';
+import { t } from './i18n.js';
+import { escapeHTML, isValidIndex } from './security.js';
+import { trackQuizResult } from './analytics.js';
 
 const PASS_THRESHOLD = 0.66;
 
 /**
  * Start a quiz for a specific phase.
- * @param {number} phaseId
+ * @param {number} phaseId - Phase number
  */
 export function startQuiz(phaseId) {
+  if (!isValidIndex(phaseId, 1, getPhaseCount())) return;
   State.setQuizPhase(phaseId);
   State.setQuizIndex(0);
   State.setQuizScore(0);
@@ -41,7 +42,7 @@ export function closeQuiz() {
 }
 
 /**
- * Render the current quiz question.
+ * Render the current quiz question using safe DOM methods.
  */
 export function renderQuestion() {
   const phase = State.getQuizPhase();
@@ -55,25 +56,36 @@ export function renderQuestion() {
 
   const q = questions[index];
   const letters = ['A', 'B', 'C', 'D'];
+  const quizBody = document.getElementById('quiz-body');
+  if (!quizBody) return;
 
-  let html = `<div class="neon-header">▌║ 🧠 ᴘʜᴀꜱᴇ ${phase} — Q${index + 1}/${questions.length} ║▌</div>`;
-  html += `<h2>🧠 Check for Understanding</h2>`;
-  html += `<p class="quiz-question">${q.q}</p>`;
-  html += '<div class="quiz-options">';
+  const headerText = t('quiz.header', { phase, current: index + 1, total: questions.length });
+
+  let html = `<div class="neon-header" id="quiz-modal-title">▌║ 🧠 ${escapeHTML(headerText)} ║▌</div>`;
+  html += `<h2>${t('quiz.title')}</h2>`;
+  html += `<p class="quiz-question" id="quiz-question-text">${escapeHTML(q.q)}</p>`;
+  html += '<div class="quiz-options" role="group" aria-labelledby="quiz-question-text">';
 
   q.options.forEach((opt, i) => {
-    html += `<button class="quiz-option" data-index="${i}">
-      <span class="opt-letter">${letters[i]}</span>${opt}
+    html += `<button class="quiz-option" data-index="${i}" aria-label="Option ${letters[i]}: ${escapeHTML(opt)}">
+      <span class="opt-letter" aria-hidden="true">${letters[i]}</span>${escapeHTML(opt)}
     </button>`;
   });
 
-  html += '</div><div id="quiz-feedback-area"></div>';
-  document.getElementById('quiz-body').innerHTML = html;
+  html += '</div><div id="quiz-feedback-area" aria-live="polite"></div>';
+  quizBody.innerHTML = html;
 
   // Attach click handlers
-  document.querySelectorAll('.quiz-option').forEach(btn => {
-    btn.addEventListener('click', () => handleAnswer(parseInt(btn.dataset.index)));
+  quizBody.querySelectorAll('.quiz-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.index, 10);
+      if (isValidIndex(idx, 0, q.options.length - 1)) {
+        handleAnswer(idx);
+      }
+    });
   });
+
+  announce(`Question ${index + 1} of ${questions.length}: ${q.q}`);
 }
 
 /**
@@ -83,33 +95,42 @@ export function renderQuestion() {
 function handleAnswer(selected) {
   const phase = State.getQuizPhase();
   const index = State.getQuizIndex();
-  const q = QUIZZES[phase][index];
+  const questions = QUIZZES[phase];
+  if (!questions || !questions[index]) return;
+
+  const q = questions[index];
   const isCorrect = selected === q.correct;
 
   if (isCorrect) State.incrementQuizScore();
 
   // Disable all options and highlight correct/wrong
   document.querySelectorAll('.quiz-option').forEach((btn, i) => {
+    btn.disabled = true;
     btn.style.pointerEvents = 'none';
     if (i === q.correct) btn.classList.add('correct');
     if (i === selected && !isCorrect) btn.classList.add('wrong');
   });
 
-  // Show feedback
-  const fbClass = isCorrect ? 'correct-fb' : 'wrong-fb';
-  const fbIcon = isCorrect ? '✅ Correct!' : '❌ Not quite.';
-  const isLast = index >= QUIZZES[phase].length - 1;
+  const fbIcon = isCorrect ? t('quiz.correct') : t('quiz.wrong');
+  const isLast = index >= questions.length - 1;
+  const nextLabel = isLast ? t('quiz.seeResults') : t('quiz.next');
 
-  document.getElementById('quiz-feedback-area').innerHTML = `
-    <div class="quiz-feedback ${fbClass}"><strong>${fbIcon}</strong> ${q.explanation}</div>
-    <button class="btn-primary quiz-next-btn" id="quiz-next-btn">
-      ${isLast ? 'See Results' : 'Next Question →'}
-    </button>`;
+  const feedbackArea = document.getElementById('quiz-feedback-area');
+  if (feedbackArea) {
+    const fbClass = isCorrect ? 'correct-fb' : 'wrong-fb';
+    feedbackArea.innerHTML = `
+      <div class="quiz-feedback ${fbClass}"><strong>${fbIcon}</strong> ${escapeHTML(q.explanation)}</div>
+      <button class="btn-primary quiz-next-btn" id="quiz-next-btn" aria-label="${escapeHTML(nextLabel)}">
+        ${escapeHTML(nextLabel)}
+      </button>`;
 
-  document.getElementById('quiz-next-btn').addEventListener('click', () => {
-    State.setQuizIndex(index + 1);
-    renderQuestion();
-  });
+    document.getElementById('quiz-next-btn')?.addEventListener('click', () => {
+      State.setQuizIndex(index + 1);
+      renderQuestion();
+    });
+  }
+
+  announce(isCorrect ? 'Correct!' : `Incorrect. ${q.explanation}`);
 }
 
 /**
@@ -122,56 +143,55 @@ function showResults() {
   const pct = Math.round((score / total) * 100);
   const passed = (score / total) >= PASS_THRESHOLD;
 
+  // Track analytics
+  trackQuizResult(phase, passed, score, total);
+
   const emoji = passed ? '🎉' : '📖';
-  const msg = passed
-    ? "Great job! You've mastered this phase!"
-    : 'Keep learning! Review the material and try again.';
+  const msg = passed ? t('quiz.resultPass') : t('quiz.resultFail');
+  const scoreLabel = t('quiz.scoreLabel', { score, total, pct });
+
+  const quizBody = document.getElementById('quiz-body');
+  if (!quizBody) return;
 
   let html = `<div class="quiz-score">
-    <div class="score-emoji">${emoji}</div>
-    <h3>${score}/${total} Correct (${pct}%)</h3>
-    <p>${msg}</p>`;
+    <div class="score-emoji" aria-hidden="true">${emoji}</div>
+    <h3>${escapeHTML(scoreLabel)}</h3>
+    <p>${escapeHTML(msg)}</p>`;
 
   if (passed) {
-    html += `<button class="btn-primary" id="complete-phase-btn">✅ Complete Phase ${phase}</button>`;
+    const completeLabel = t('quiz.completePhase', { phase });
+    html += `<button class="btn-primary" id="complete-phase-btn">${escapeHTML(completeLabel)}</button>`;
   } else {
-    html += `<button class="btn-primary" id="retry-quiz-btn">🔄 Retry Quiz</button>
-             <button class="btn-ghost" id="review-btn" style="margin-left:10px">Review Material</button>`;
+    html += `<button class="btn-primary" id="retry-quiz-btn">${t('quiz.retry')}</button>
+             <button class="btn-ghost" id="review-btn" style="margin-left:10px">${t('quiz.review')}</button>`;
   }
 
   html += '</div>';
-  document.getElementById('quiz-body').innerHTML = html;
+  quizBody.innerHTML = html;
 
   // Wire up buttons
-  const completeBtn = document.getElementById('complete-phase-btn');
-  if (completeBtn) {
-    completeBtn.addEventListener('click', () => {
-      const count = getPhaseCount();
-      State.completePhase(phase);
-      if (phase < count) State.setCurrentPhase(phase + 1);
-      closeQuiz();
-      updateProgressDisplay();
+  document.getElementById('complete-phase-btn')?.addEventListener('click', () => {
+    const count = getPhaseCount();
+    State.completePhase(phase);
+    if (phase < count) State.setCurrentPhase(phase + 1);
+    closeQuiz();
+    updateProgressDisplay();
 
-      // Check if all phases complete
-      if (State.getCompletedPhases().length === count) {
-        setTimeout(() => {
-          document.getElementById('celebration').classList.remove('hidden');
-        }, 500);
-      }
-    });
-  }
+    if (State.getCompletedPhases().length === count) {
+      setTimeout(() => {
+        document.getElementById('celebration')?.classList.remove('hidden');
+        announce(t('celebration.title'));
+      }, 500);
+    }
+  });
 
-  const retryBtn = document.getElementById('retry-quiz-btn');
-  if (retryBtn) {
-    retryBtn.addEventListener('click', () => {
-      State.setQuizIndex(0);
-      State.setQuizScore(0);
-      renderQuestion();
-    });
-  }
+  document.getElementById('retry-quiz-btn')?.addEventListener('click', () => {
+    State.setQuizIndex(0);
+    State.setQuizScore(0);
+    renderQuestion();
+  });
 
-  const reviewBtn = document.getElementById('review-btn');
-  if (reviewBtn) {
-    reviewBtn.addEventListener('click', closeQuiz);
-  }
+  document.getElementById('review-btn')?.addEventListener('click', closeQuiz);
+
+  announce(`Quiz complete. ${score} out of ${total} correct. ${passed ? 'Passed!' : 'Try again.'}`);
 }

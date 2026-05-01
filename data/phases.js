@@ -7,7 +7,7 @@
  * 3. Each section needs: heading, text, and optionally list[] and infoBox
  * 4. Add matching quiz questions in quizzes.js
  */
-export const PHASES = {
+export const PHASES = Object.freeze({
   1: {
     title: "Registration & Eligibility",
     icon: "📋",
@@ -137,7 +137,7 @@ export const PHASES = {
       }
     ]
   }
-};
+});
 
 /**
  * Returns the total number of phases.

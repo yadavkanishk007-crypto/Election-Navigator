@@ -1,0 +1,29 @@
+{
+  "env": {
+    "browser": true,
+    "es2020": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-undef": "error",
+    "eqeqeq": ["error", "always"],
+    "no-var": "error",
+    "prefer-const": "warn",
+    "no-eval": "error",
+    "no-implied-eval": "error",
+    "no-new-func": "error",
+    "no-script-url": "error",
+    "no-alert": "warn",
+    "curly": "error",
+    "no-throw-literal": "error",
+    "prefer-template": "warn",
+    "no-multi-assign": "warn",
+    "no-return-assign": "error",
+    "no-self-compare": "error",
+    "no-sequences": "error"
+  }
+}

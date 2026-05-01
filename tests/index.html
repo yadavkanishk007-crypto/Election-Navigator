@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Navigator — Test Suite</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #0f0a0c; color: #f5f0f1; padding: 2rem; }
+        h1 { font-size: 1.8rem; margin-bottom: 1rem; }
+        .test-summary { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 2rem; margin: 1rem 0; }
+        .test-summary h2 { margin-bottom: 1rem; }
+        .test-bar { height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; margin-bottom: 1rem; }
+        .test-bar-fill { height: 100%; border-radius: 6px; transition: width 0.3s; }
+        .test-summary ul { list-style: none; padding: 0; }
+        .test-summary li { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; }
+        .test-summary li strong { color: #ef4444; }
+        #loading { color: #b8a3a8; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Election Navigator — Test Suite</h1>
+    <p id="loading">Running tests...</p>
+    <div id="test-results"></div>
+
+    <!-- Load the app's HTML elements needed for accessibility tests -->
+    <div style="display:none" aria-hidden="true">
+        <!-- Mini version of index.html structure for DOM tests -->
+    </div>
+
+    <script type="module">
+        // We need to run tests that require the real DOM, so load index.html in an iframe
+        // and also run unit tests directly
+
+        import { displayResults } from './test-runner.js';
+        import { runStateTests } from './state.test.js';
+        import { runSecurityTests } from './security.test.js';
+        import { runDataTests } from './data.test.js';
+
+        // Run unit tests (no DOM required)
+        runStateTests();
+        runSecurityTests();
+        runDataTests();
+
+        // For accessibility tests, we load the main page in an iframe
+        const iframe = document.createElement('iframe');
+        iframe.src = '../index.html';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+
+        iframe.addEventListener('load', async () => {
+            // Import and run a11y tests against iframe document
+            const { runAccessibilityTests } = await import('./accessibility.test.js');
+
+            // Override document references to point at iframe
+            const origGetById = document.getElementById.bind(document);
+            const origQueryAll = document.querySelectorAll.bind(document);
+            const origQuery = document.querySelector.bind(document);
+            const iframeDoc = iframe.contentDocument;
+
+            document.getElementById = (id) => iframeDoc.getElementById(id) || origGetById(id);
+            document.querySelector = (sel) => iframeDoc.querySelector(sel) || origQuery(sel);
+            document.querySelectorAll = (sel) => {
+                const results = iframeDoc.querySelectorAll(sel);
+                return results.length > 0 ? results : origQueryAll(sel);
+            };
+            // Temporarily set documentElement for lang test
+            const origLang = document.documentElement.lang;
+            document.documentElement.lang = iframeDoc.documentElement.lang;
+
+            runAccessibilityTests();
+
+            // Restore
+            document.getElementById = origGetById;
+            document.querySelector = origQuery;
+            document.querySelectorAll = origQueryAll;
+            document.documentElement.lang = origLang;
+
+            // Display results
+            document.getElementById('loading').style.display = 'none';
+            displayResults(document.getElementById('test-results'));
+        });
+    </script>
+</body>
+</html>
